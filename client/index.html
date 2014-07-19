@@ -17,7 +17,14 @@
 	<script type="text/javascript" src="js/bootstrap.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
 
-	<div id="app" class="container"></div>
+	<div class="container">
+		<div id="menu">
+			<a href="#"><div id="menu_follows">follows</div></a>
+			<a href="#"><div id="menu_followed_by">followed by</div></a>
+		</div>
+
+		<div id="app"></div>
+	</div>
 
 <!-- TODO move these to an external file and load them with require.js -->
 <script id="testemplate" tyle="x-tmpl-mustache">

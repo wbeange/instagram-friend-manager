@@ -62,13 +62,48 @@
 			$output = FALSE;
 		}*/
 
-		$file = fopen("input.txt", "r");
+		$file = fopen("follows.txt", "r");
 		$line = fgets($file);
 		fclose($file);
 
 		return $line;
 
 	});
+
+	$app->get('followed-by/', function() {
+
+		/*$access_token 	= "183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3";
+		$user_id		= "183356248";
+
+		$url =  "https://api.instagram.com/v1/users/$user_id/followed-by";
+		$url .= "?access_token=$access_token";
+
+		$ch = curl_init();
+		curl_setopt($ch, CURLOPT_URL, $url);		
+		$data = curl_exec($ch);
+		curl_close($ch);
+
+		if($data['meta']['code'] == 200)
+		{
+			$pagination = $data['pagination']['next_url'];
+
+			$users = $data['data'];
+
+			$output = $users;
+		}
+		else
+		{
+			//error ...
+			$output = FALSE;
+		}*/
+
+		$file = fopen("followed-by.txt", "r");
+		$line = fgets($file);
+		fclose($file);
+
+		return $line;
+
+	});	
 
 	$app->get('login/', function() use($app) {
 
