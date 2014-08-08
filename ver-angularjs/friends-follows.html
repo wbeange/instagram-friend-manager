@@ -1,1 +1,21 @@
-friends follows
+this doesn't make any sense
+
+number of followers: {{follows_count}}
+
+<div class="row">
+	<div ng-repeat="user in follows" class="col-md-3">
+		<div class="padding-5 margin-5 border border-grey ui-corner-all">
+			<div class="padding-3">
+				<img class="border border-grey padding-3 ui-corner-all" ng-src="{{user.profile_picture}}" alt="..." class="img-rounded">
+			</div>
+			<div class="">{{user.username}}</div>
+			<div class="">{{user.id}}</div>
+			<div class="">
+				<button type="button" class="btn btn-success" ng-click="follow_user(user.id)">follow</button>
+			</div>
+			<div class="">
+				<button type="button" class="btn btn-danger" ng-click="unfollow_user(user.id)">unfollow</button>
+			</div>
+		</div>
+	</div>
+</div>
