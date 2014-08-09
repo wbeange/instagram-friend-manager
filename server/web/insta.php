@@ -1,6 +1,7 @@
 <?php
 
 	use Symfony\Component\HttpFoundation\Request;
+	use Symfony\Component\HttpKernel\HttpKernelInterface;
 	use Symfony\Component\HttpFoundation\Response;
 
 	// web/index.php
@@ -102,8 +103,48 @@
 		fclose($file);
 
 		return $line;
-
 	});	
+
+	//return users that you follow who don't follow you back
+	$app->get('follows-not', function() use($app) {
+
+		$file = fopen("follows.txt", "r");
+		$line1 = fgets($file);
+		fclose($file);
+
+		$file = fopen("followed-by.txt", "r");
+		$line2 = fgets($file);
+		fclose($file);				
+
+		
+		
+		return $line1;
+
+		$data = json_decode($line1);
+
+		return $data;
+		
+		$follows_array = $data['data'];
+
+
+		return $follows_array;
+
+
+
+		$data = json_encode($line2);
+		$followedby_array = $data['data'];
+
+		foreach($follows_array as $u)
+		{
+			var_dump($u);
+			break;
+		}
+
+		$output = array();
+
+		return $output;
+
+	});
 
 	$app->get('login/', function() use($app) {
 

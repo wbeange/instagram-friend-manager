@@ -2,7 +2,12 @@
 $(function () {
   
   var User = Backbone.Model.extend({});
-  var Users = Backbone.Collection.extend({ model: User });
+
+  var Users = Backbone.Collection.extend({ 
+
+    model: User 
+
+  });
 
   var AppView = Backbone.View.extend({
 
@@ -11,9 +16,12 @@ $(function () {
 
     el: $('body'),
  
-    events: {
-      'click #menu_follows'       : 'event_follows',
-      'click #menu_followed_by'   : 'event_followed_by',
+    events:
+    {
+      'click #menu_follows'         : 'event_follows',
+      'click #menu_followed_by'     : 'event_followed_by',
+      'click #menu_follows_not'     : 'event_follows_not',
+      'click #menu_followed_by_not' : 'event_followed_by_not',
     },
 
     initialize: function()
@@ -43,16 +51,26 @@ $(function () {
       return false;
     },
 
+    event_follows_not: function()
+    {
+      this.get_follows_not();
+      return false;
+    },
+
+    event_followed_by_not: function()
+    {
+      this.get_followed_by_not();
+      return false;
+    },
+
     get_follows: function()
     {
       if(this.follows === null)
       {
         this.server_get_follows();
       }
-      else
-      {
-        this.display_users( this.follows.toJSON() );
-      }
+
+      this.display_users( this.follows.toJSON() );
     },
 
     get_followed_by: function()
@@ -61,9 +79,37 @@ $(function () {
       {
         this.server_get_followed_by();
       }
-      else
+
+      this.display_users( this.followed_by.toJSON() );
+    },
+
+    get_follows_not: function()
+    {
+      if(this.follows === null)
       {
-        this.display_users( this.followed_by.toJSON() );
+        this.server_get_follows();      
+      }      
+      if(this.followed_by === null)
+      {
+        this.server_get_followed_by();
+      }
+
+      //find users in follows that are not in followedby
+      var follows = this.follows.toJSON();
+      var followedby = this.followed_by.toJSON();
+
+
+    },
+
+    get_followed_by_not: function()
+    {
+      if(this.follows === null)
+      {
+        this.server_get_follows();      
+      }      
+      if(this.followed_by === null)
+      {
+        this.server_get_followed_by();
       }
     },
 
@@ -82,8 +128,6 @@ $(function () {
           {
             that.follows.add(data.data[i]);
           }
-
-          that.display_users( that.follows.toJSON() );
         }
         else
         {
