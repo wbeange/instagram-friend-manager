@@ -1,23 +1,31 @@
- <!doctype html>
-  <html ng-app="friendManager">
+ <!DOCTYPE html>
+  <html lang="en" ng-app="friendManager">
     <head>
-      <title>IFM Angular</title>
+      <title>Instagram Friend Manager</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
       <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+
     </head>
     <body>
       <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular.min.js"></script>
       <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.0/angular-route.js"></script>
+      <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js"></script>
       <script src="app.js"></script>
 
-      <h1>IFM Angularrr</h1>
+      <div class="container">
+        <h1>IFM Angularrr</h1>
 
-      <ul>
-        <li><a href="#">home</a></li>
-        <li><a href="#follows">follows</a></li>
-        <li><a href="#followed-by">followed by</a></li>
-      </ul>
+        <ul>
+          <li><a href="#">home</a></li>
+          <li><a href="#follows">follows</a></li>
+          <li><a href="#followed-by">followed by</a></li>
+        </ul>
 
-      <div ng-view></div>
+        <div ng-view></div>
+      </div>
 
     </body>
   </html>

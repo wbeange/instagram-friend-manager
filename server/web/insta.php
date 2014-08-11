@@ -30,7 +30,7 @@
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 		$response = curl_exec($ch);
-		$data = json_decode($response);
+		$data = json_decode($response, true);
 		curl_close($ch);
 
 		return "home page ...";
@@ -38,36 +38,52 @@
 
 	$app->get('follows/', function() {
 
-		/*$access_token 	= "183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3";
+		$access_token 	= "183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3";
 		$user_id		= "183356248";
+		$cursor 		= "";
 
-		$url =  "https://api.instagram.com/v1/users/$user_id/follows";
-		$url .= "?access_token=$access_token";
+		$max = 20;
+		$cur = 1;
 
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);		
-		$data = curl_exec($ch);
-		curl_close($ch);
+		$output = array();
 
-		if($data['meta']['code'] == 200)
+		while($cur < $max)
 		{
-			$pagination = $data['pagination']['next_url'];
-			
-			$users = $data['data'];
+			$cur += 1;
 
-			$output = $users;
+			$url =  "https://api.instagram.com/v1/users/$user_id/follows?access_token=$access_token&cursor=$cursor";
+
+			$ch = curl_init();
+			curl_setopt($ch, CURLOPT_URL, $url);
+			curl_setopt($ch, CURLOPT_HEADER, 0);
+			//curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-type: application/json'));
+			curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+			$response = curl_exec($ch);
+			$data = json_decode($response);
+			curl_close($ch);
+
+			var_dump($data['meta']);
+			break;
+
+			//TODO: parse return
+			$output = array_merge($output, $data['data']);
+
+			if($data['pagination']['next_cursor'])
+			{
+				$cursor = $data['pagination']['next_cursor'];
+			}
+			else
+			{
+				break;
+			}
 		}
-		else
-		{
-			//error ...
-			$output = FALSE;
-		}*/
 
-		$file = fopen("follows.txt", "r");
+		return $output;
+
+		/* $file = fopen("follows.txt", "r");
 		$line = fgets($file);
-		fclose($file);
-
-		return $line;
+		fclose($file); 
+		return $line; */		
 
 	});
 
