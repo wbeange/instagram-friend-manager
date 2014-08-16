@@ -5,6 +5,7 @@
 	app.controller('UsersCtrl', ['$scope', 'Instagram', '$http', function($scope, Instagram, $http) {
 			
 		$scope.loadUsers = function(groupId) {
+			
 			if(groupId === 'follows')
 			{
 				$scope.users = $scope.follows;
@@ -51,8 +52,6 @@
 				full_name: "Coco Ho",
 				id: "10908579"				
 			}]; */
-
-		console.log('wtf');
 
 		//load variables
 		Instagram.getRelationshipData().then(function(data) {			
@@ -117,6 +116,7 @@
 				_getFollows(_getFollows, '', []),
 				_getFollowedBy(_getFollowedBy, '', [])
 				]);
+      
 		}
 
 		//Recursive private method
