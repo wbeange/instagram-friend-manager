@@ -17,7 +17,7 @@
 
       <div class="container" ng-controller="UsersCtrl">
 
-        <h1>IFM Angularrr</h1>
+        <h1>Instagram Friend Manager</h1>
 
         <ul>
           <li><a href="" ng-click="loadUsers('follows')">follows</a></li>
@@ -35,7 +35,6 @@
                 <img class="border border-grey padding-3 ui-corner-all" ng-src="{{user.profile_picture}}" alt="..." class="img-rounded">
               </div>
               <div class="top left padding-5">
-                <div class=""><span>{{user.full_name}}</span></div>
                 <div class=""><span>{{user.username}}</span></div>
                 <div ngif="{{user.following}}"><button type="button" class="btn btn-success" ng-click="">follow</button></div>
                 <div ngif="!{{user.following}}"><button type="button" class="btn btn-danger" ng-click="">unfollow</button></div>

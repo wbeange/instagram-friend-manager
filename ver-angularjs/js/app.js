@@ -1,6 +1,8 @@
 (function(){
 
-	var app = angular.module('friendManager', ['ngRoute']);
+	//cookies!
+
+  var app = angular.module('friendManager', ['ngRoute']);
 
 	app.controller('UsersCtrl', ['$scope', 'Instagram', '$http', function($scope, Instagram, $http) {
 			
@@ -43,17 +45,17 @@
 		$scope.idols = [];
 		$scope.idolsCount = 0;
 
-		$scope.users = [{
+		/* $scope.users = [{
 				username: "xococoho",
 				bio: "Professional Surfer from Hawaii 🐬 (everything I wear is @VolcomWomens) Trust.Honor.Loyalty.Love",
 				website: "http://www.usatoday.com/media/cinematic/video/13364719/surfer-coco-ho-on-appearing-in-espn-body-issue/",
 				profile_picture: "http://photos-c.ak.instagram.com/hphotos-ak-xaf1/10601766_747458748625730_1526191873_a.jpg",
 				full_name: "Coco Ho",
 				id: "10908579"				
-			}];		
+			}]; */
 
 		//load variables
-		/* Instagram.getRelationshipData().then(function(data) {			
+		Instagram.getRelationshipData().then(function(data) {			
 			follows = data[0];
 			followedBy = data[1];
 
@@ -71,7 +73,7 @@
 
 			$scope.loadUsers('follows');
 
-		}); */
+		});
 
 
 		//find difference in arrays
@@ -107,87 +109,63 @@
 	//Communicates with Server
 	app.service('Instagram', ['$http', '$q', function($http, $q) {
 		
-		//Public
-		this.getRelationshipData = function() {
+		//
+    //Public
+    //
+
+    this.getRelationshipData = function() {
 
 			return $q.all([
-				_getFollows(_getFollows, '', []),
-				_getFollowedBy(_getFollowedBy, '', [])
+				getFollows(),
+				getFollowedBy()
 				]);
 		}
 
-		//Recursive private method
-		function _getFollows(callback_fn, cursor, users){
+    //
+    //Private
+    //
 
-			var base = 'https://api.instagram.com/v1/users/183356248/follows';
-			var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
-																				
-			var url = base + access_token + cursor;
+    function getFollows() {            
+      var userId = '183356248';
+      var base = 'https://api.instagram.com/v1/users/' + userId + '/follows';
+      var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
+      var url = base + access_token;
 
-			return $http.jsonp(url).then(
-				
-				//success
-				function(result){
+      return _getUsers(_getUsers, url, '', []);
+    }
 
-					//add follow users from server to array
-					users = users.concat(result.data.data);
+    function getFollowedBy() {
+      var userId = '183356248';
+      var base = 'https://api.instagram.com/v1/users/' + userId + '/followed-by';
+      var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
+      var url = base + access_token;
 
-					//check if more data needs to be retrieved from the server
-					if(result.data.pagination.next_cursor)
-					{
-						//TODO: call again if more data to retrieve
-						cursor = '&cursor=' + result.data.pagination.next_cursor;
-						
-						return callback_fn(callback_fn, cursor, users);
-					}
-					//all data fetched, return it
-					else
-					{
-						return users;
-					}
-				},
+      return _getUsers(_getUsers, url, '', []);
+    }
 
-				//error
-				function(result){
-					console.log('error');
-				});
-		};
+    //Recursively fetch users from Instagram API
+    function _getUsers(callback_fn, url, cursor, users) {
 
-		//Recursive private method
-		function _getFollowedBy(callback_fn, cursor, users) {
+      return $http.jsonp(url+cursor).then(
+        //success
+        function(result) {
 
-			var base = 'https://api.instagram.com/v1/users/183356248/followed-by';
-			var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
-			var url = base + access_token + cursor;
+          //add follow users from server to array
+          users = users.concat(result.data.data);
 
-			return $http.jsonp(url).then(
-				
-				//success
-				function(result){
-
-					//add follow users from server to array
-					users = users.concat(result.data.data);
-
-					//check if more data needs to be retrieved from the server
-					if(result.data.pagination.next_cursor)
-					{
-						//TODO: call again if more data to retrieve
-						cursor = '&cursor=' + result.data.pagination.next_cursor;
-						
-						return callback_fn(callback_fn, cursor, users);
-					}
-					//all data fetched, return it
-					else
-					{
-						return users;
-					}
-				},
-
-				//error
-				function(result){
-					console.log('error');
-				});
-		};
+          //check if more data needs to be retrieved from the server
+          if(result.data.pagination.next_cursor)
+          {
+            cursor = '&cursor=' + result.data.pagination.next_cursor;
+            
+            return callback_fn(callback_fn, url, cursor, users);
+          }
+          else
+          {
+            return users;
+          }
+        }
+      )};
 
 	}]);
 
