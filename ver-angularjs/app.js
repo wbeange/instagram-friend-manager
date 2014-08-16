@@ -2,55 +2,81 @@
 
 	var app = angular.module('friendManager', ['ngRoute']);
 
-	//routing!!!
-	app.config(function($routeProvider){
-		$routeProvider.
-			when('/follows', {
-				templateUrl: 'friends-follows.html',
-				controller: 'FollowsCtrl'
-			}).
-			when('/followed-by', {
-				templateUrl: 'friends-followed-by.html',
-				controller: 'FollowedByCtrl'
-			}).
-			otherwise({
-				redirectTo: '/follows'
-			});
-	});
+	app.controller('UsersCtrl', ['$scope', 'Instagram', '$http', function($scope, Instagram, $http) {
+			
+		$scope.loadUsers = function(groupId) {
+			if(groupId === 'follows')
+			{
+				$scope.users = $scope.follows;
+				$scope.usersCount = $scope.followsCount;
+			}
+			else if(groupId === 'followedBy')
+			{
+				$scope.users = $scope.followedBy;
+				$scope.usersCount = $scope.followedByCount;
+			}
+			else if(groupId === 'fans')
+			{
+				$scope.users = $scope.fans;
+				$scope.usersCount = $scope.fansCount;
+			}
+			else
+			{
+				$scope.users = $scope.idols;
+				$scope.usersCount = $scope.idolsCount;
+			}
+		};
 
-	app.controller('FollowedByCtrl', ['$scope', 'Instagram', function($scope, Instagram){
-		$scope.message = 'sup doggy';
-	}]);	
+		//init variables
+		$scope.users = [];
+		$scope.usersCount = 0;
 
-	app.controller('FollowsCtrl', ['$scope', 'Instagram', '$http', function($scope, Instagram, $http){
-		
-		//init
-		$scope.follows 				= [];
-		$scope.follows_count 	= 0;
+		$scope.follows = [];
+		$scope.followsCount = 0;
 
-		Instagram.getFollowsArray()
-			.then(function(datas){
-				follows 		= datas[0];
-				followedbys = datas[1];
+		$scope.followedBy = [];
+		$scope.followedByCount = 0;
 
-				$scope.follows 				= findDifference(follows, followedbys);
-				$scope.follows_count 	= dif.length;
-			});
+		$scope.fans = [];
+		$scope.fansCount = 0;
 
-		//Find difference in arrays
-		function findDifference(users_array1, users_array2)
-		{			
-			var difference_array = [];
+		$scope.idols = [];
+		$scope.idolsCount = 0;
 
-			//Check if there is a mutual 'friends' relationship
+		//load variables
+		Instagram.getRelationshipData().then(function(data) {
+			follows = data[0];
+			followedBy = data[1];
+
+			$scope.follows = follows;
+			$scope.followsCount = follows.length;
+
+			$scope.followedBy = followedBy;
+			$scope.followedByCount = followedBy.length;
+
+			$scope.fans = findDifference(follows, followedBy);
+			$scope.fansCount = $scope.fans.length;
+
+			$scope.idols = findDifference(followedBy, follows);
+			$scope.idolsCount = $scope.idols.length;
+
+			$scope.loadUsers('follows');
+		});
+
+
+		//find difference in arrays
+		var findDifference = function(usersArray1, usersArray2) {			
+			var differenceArray = [];
+
+			//check if there is a mutual 'friends' relationship
 			//ie user exists in both arrays
-			for(var i=0; i<users_array1.length; i++)
+			for(var i=0; i<usersArray1.length; i++)
 			{
 				var friends = false;
 
-				for(var j=0; j<users_array2.length; j++)
+				for(var j=0; j<usersArray2.length; j++)
 				{
-					if(users_array1[i].id == users_array2[j].id)
+					if(usersArray1[i].id == usersArray2[j].id)
 					{
 						friends = true;
 						continue;
@@ -59,35 +85,20 @@
 
 				if(friends === false)
 				{
-					difference_array.push(users_array1[i]);
+					differenceArray.push(usersArray1[i]);
 				}
 			}
 			
-			return difference_array;
+			return differenceArray;
 		};
-
-
-		//Instagram.registerObserverCallback(updateFollows);
-
-		/* loadFollows();
-
-		function loadFollows(){
-			Instagram.getFollows().then(function(users){
-				$scope.follows 				= users;
-				$scope.follows_count 	= users.length;
-			});
-		} */
 
 	}]);
 
 	//Communicates with Server
-	app.service('Instagram', ['$http', '$q', function($http, $q){
-
-		this.follows 		= [];
-		this.followedby = [];
-
+	app.service('Instagram', ['$http', '$q', function($http, $q) {
+		
 		//Public
-		this.getFollowsArray = function(){
+		this.getRelationshipData = function() {
 			return $q.all([
 				_getFollows(_getFollows, '', []),
 				_getFollowedBy(_getFollowedBy, '', [])
@@ -99,7 +110,7 @@
 
 			var base = 'https://api.instagram.com/v1/users/183356248/follows';
 			var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
-																				//183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3
+																				
 			var url = base + access_token + cursor;
 
 			return $http.jsonp(url).then(
@@ -132,7 +143,7 @@
 		};
 
 		//Recursive private method
-		function _getFollowedBy(callback_fn, cursor, users){
+		function _getFollowedBy(callback_fn, cursor, users) {
 
 			var base = 'https://api.instagram.com/v1/users/183356248/followed-by';
 			var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
@@ -165,156 +176,11 @@
 				function(result){
 					console.log('error');
 				});
-		};		
-
-
-
-
-
-
-
-
-
-		//Recursive private method
-		function _getFollowedBy(callback_fn, cursor, users){
-			var base = 'https://api.instagram.com/v1/users/183356248/followed-by';
-			var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
-			var url = base + access_token + cursor;
-
-			return $http.jsonp(url).then(
-				
-				//success
-				function(result){
-
-					//add follow users from server to array
-
-					users = users.concat(result.data.data);
-
-					//check if more data needs to be retrieved from the server
-					if(result.data.pagination.next_cursor)
-					{
-						cursor = '&cursor=' + result.data.pagination.next_cursor;
-
-						//TODO: call again if more data to retrieve
-						return callback_fn(callback_fn, cursor, users);
-					}
-					//all data fetched, return it
-					else
-					{
-						return users;
-					}
-				}, 
-
-				//error
-				function(result){
-					console.log('error');
-				});
-		};		
-
-
-		var observerCallbacks = [];
-
-		this.registerObserverCallback = function(callback_fn){
-			observerCallbacks.push(callback_fn);
-		}
-
-		var notifyObservers = function(){
-    	angular.forEach(observerCallbacks, function(callback){
-      	callback();
-    	});
-  	};	
+		};
 
 	}]);
 
-
-
-
-
-
-	/* app.service('Instagram', ['$http', function($http) { 
-
-		this.follows = [];
-		this.follows_count = this.follows.length;
-
-		this.followedby = [];
-		this.followedby_count = this.followedby.length;
-
-		// TODO: how to make sequential $http calls to deal with pagination / limited return data from api
-		//I'm using recursive callback_fn - this might be super sketchy...
-		var server_get_follows = function(callback_fn, cursor) {
-
-			var base = 'https://api.instagram.com/v1/users/183356248/follows';
-			var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
-			var url = base + access_token + cursor;
-
-			$http.jsonp(url)
-				.success(function(data){
-					
-					console.log('doh');
-
-					/*this.follows = this.follows.concat(data.data);
-					this.follows_count = this.follows.length;
-					
-					if(data.pagination.next_cursor)
-					{
-						cursor = '&cursor=' + data.pagination.next_cursor;
-
-						//TODO: call again if more data to retrieve
-						//callback_fn(callback_fn, cursor);
-					}
-
-				})
-				.error(function(data){
-					console.log('nooo');
-				});
-		};
-
-		server_get_follows(server_get_follows, '');
-
-		/* var server_get_followed_by = function(callback_fn, cursor) {
-
-			var base = 'https://api.instagram.com/v1/users/183356248/followed-by';
-			var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
-			var url = base + access_token + cursor;
-
-			$http.jsonp(url)
-				.success(function(data){
-					
-					this.followedby = this.followedby.concat(data.data);
-					this.followedby_count = this.followedby.length;
-					
-					if(data.pagination.next_cursor)
-					{
-						cursor = '&cursor=' + data.pagination.next_cursor;
-
-						//TODO: call again if more data to retrieve
-						callback_fn(callback_fn, cursor);
-					}
-
-				})
-				.error(function(data){
-					console.log('nooo');
-				});
-		};
-
-		server_get_followed_by(server_get_followed_by, ''); */
-
-		//find differences in the 2 arrays
-
-		/* var fans = [];
-
-		var follows_ids = this.follows.map(function(u){ return u.id })
-
-		this.follows_ids = follows_ids; 
-
-		
-	}]); */
-
 })();
-
-
-
-
 
 
 	/*
@@ -342,71 +208,4 @@
 
 	} */
 
-	/*app.factory('Instagram', ['$http', function($http) { 
-		return { 
-			'get_follows': function() {
-				var url = 'https://api.instagram.com/v1/users/183356248/follows?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
-
-				//TODO: Using jsonp to solve cross domain issue. Api returns json, not jsonp - needed to specicfy additional callback attribute
-				return $http.jsonp(url);
-			}
-		};
-	}]);*/
-
-	/*app.directive('friendsFollows', function(){
-		return {
-			restrict: 'E',
-			templateUrl: 'friends-follows.html',
-			//template: 'what the fuck is going on',
-			controller: ['$scope', 'Instagram', function($scope, Instagram){
-
-				/*$scope.follows = [];
-
-				Instagram.get_follows()
-					.success(function(data){
-						console.log('success loaded friends follows');
-						console.log(data);
-
-						$scope.follows = data.data;
-					})
-					.error(function(data){
-						console.log('errrrrr');
-					});
-
-				console.log('friends follows...');
-
-				$scope.stupid = 'hello stupid';
-			}],
-			controllerAs: 'follows'
-		};
-	});
-
-	app.directive('friendsFollowedBy', function(){
-		return {
-			restrict: 'E',
-			templateUrl: 'friends-followed-by.html',
-			controller: function(){
-				console.log('shorty is so annoying');
-			},
-			controllerAs: 'followedby'
-		};
-	});
-
-	app.directive('friendTabs', function(){
-		return {
-			restrict: 'E',
-			templateUrl: 'friend-tabs.html',
-			controller: function(){
-				this.tab = 1;
-
-				this.isSet = function(checkTab){
-					return (this.tab === checkTab);
-				};
-
-				this.setTab = function(activeTab){
-					this.tab = activeTab;
-				};
-			},
-			controllerAs: 'tab'
-		};
-	});*/
+	*/
