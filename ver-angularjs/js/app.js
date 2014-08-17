@@ -1,12 +1,64 @@
 (function(){
 
-	//cookies!
+  /* //first thing is first - we need to get the access token !
+  $cookieStore.remove("accessCode");
 
-  var app = angular.module('friendManager', ['ngRoute']);
+  var accessCode = $cookieStore.get("accessCode");
 
-	app.controller('UsersCtrl', ['$scope', 'Instagram', '$http', function($scope, Instagram, $http) {
-			
-		$scope.loadUsers = function(groupId) {
+  console.log('access code  - ' + accessCode);
+
+  if(accessCode === undefined)
+  {
+    //first we need to set the cookie so that we can get the access token :)
+    var redirectUri = 'http://localhost/#/auth/';
+
+    var authorization_url = 'https://instagram.com/oauth/authorize/';
+    authorization_url += '?client_id=0ed0e250ea854a129e9a849a8ee0ed9c';  
+    authorization_url += '&response_type=token';      
+    authorization_url += '&redirect_uri=' + redirectUri;
+    //authorization_url += '&scope=relationships';
+
+    window.location.href = authorization_url;
+  } */
+
+  var app = angular.module('friendManager', ['ngRoute', 'ngCookies']);
+
+  //routing!!!
+  app.config(function($routeProvider, $locationProvider){
+    
+    //console.log( $location.path() );
+
+    $routeProvider.
+      when('/', {
+        templateUrl: 'template-users.html',
+        controller: 'UsersCtrl'
+      }).
+      when('/auth/', {
+        templateUrl: 'template-auth.html',
+        controller: 'AuthCtrl'
+      }).
+      otherwise({
+        redirectTo: '/'
+      });
+
+      //$locationProvider.html5Mode(true);
+  });
+
+  app.controller('AuthCtrl', ['$scope', '$location', '$routeParams', '$cookieStore', function($scope, $location, $routeParams, $cookieStore) {
+    
+    var accessCode = $location.url().replace('/auth/#', '');
+
+    $cookieStore.put("accessCode", accessCode);
+
+    console.log('access code ' + accessCode );
+
+    //$location.path('/');
+
+  }]);
+
+	app.controller('UsersCtrl', ['$scope', 'Instagram', '$http', '$window', '$cookieStore', function($scope, Instagram, $http, $window, $cookieStore) {		
+
+    $scope.loadUsers = function(groupId) {
 			if(groupId === 'follows')
 			{
 				$scope.users = $scope.follows;
@@ -107,7 +159,7 @@
 	}]);
 
 	//Communicates with Server
-	app.service('Instagram', ['$http', '$q', function($http, $q) {
+	app.service('Instagram', ['$http', '$q', '$cookieStore', function($http, $q, $cookieStore) {
 		
 		//
     //Public
@@ -126,18 +178,20 @@
     //
 
     function getFollows() {            
+      var accessCode = $cookieStore.get("accessCode");
       var userId = '183356248';
       var base = 'https://api.instagram.com/v1/users/' + userId + '/follows';
-      var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
+      var access_token = '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
       var url = base + access_token;
 
       return _getUsers(_getUsers, url, '', []);
     }
 
     function getFollowedBy() {
+      var accessCode = $cookieStore.get("accessCode");
       var userId = '183356248';
       var base = 'https://api.instagram.com/v1/users/' + userId + '/followed-by';
-      var access_token = '?access_token=183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3&callback=JSON_CALLBACK';
+      var access_token = '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
       var url = base + access_token;
 
       return _getUsers(_getUsers, url, '', []);
@@ -146,9 +200,13 @@
     //Recursively fetch users from Instagram API
     function _getUsers(callback_fn, url, cursor, users) {
 
-      return $http.jsonp(url+cursor).then(
+      var full_url = url + cursor;
+
+      return $http.jsonp(full_url).then(
         //success
         function(result) {
+
+          console.log(result);
 
           //add follow users from server to array
           users = users.concat(result.data.data);

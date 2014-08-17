@@ -1,0 +1,26 @@
+      
+        <h1>Instagram Friend Manager</h1>
+
+        <ul>
+          <li><a href="" ng-click="loadUsers('follows')">follows</a></li>
+          <li><a href="" ng-click="loadUsers('followedBy')">followed by</a></li>
+          <li><a href="" ng-click="loadUsers('fans')">fans</a></li>
+          <li><a href="" ng-click="loadUsers('idols')">idols</a></li>
+        </ul>
+        
+        Number of Users: {{usersCount}}
+
+        <div class="row">
+          <div ng-repeat="user in users" class="col-md-3">
+            <div class="margin-5 padding-5 border border-grey ui-corner-all center top">
+              <div class="top left padding-5">
+                <img class="border border-grey padding-3 ui-corner-all" ng-src="{{user.profile_picture}}" alt="..." class="img-rounded">
+              </div>
+              <div class="top left padding-5">
+                <div class=""><span>{{user.username}}</span></div>
+                <div ngif="{{user.following}}"><button type="button" class="btn btn-success" ng-click="">follow</button></div>
+                <div ngif="!{{user.following}}"><button type="button" class="btn btn-danger" ng-click="">unfollow</button></div>
+              </div>
+            </div>
+          </div>        
+        </div>
