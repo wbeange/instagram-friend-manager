@@ -50,6 +50,12 @@ pulling all style conventions used on my past project */
 .padding-20 { padding: 20px; }
 .padding-15 { padding: 25px; }
 
+.padding-top-5 { padding-top: 5px; }
+.padding-top-20 { padding-top: 20px; }
+
+.padding-bottom-5 { padding-bottom: 5px; }
+.padding-bottom-20 { padding-bottom: 20px; }
+
 /* margins */
 .margin-1 { margin: 1px; }
 .margin-2 { margin: 2px; }
