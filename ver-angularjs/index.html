@@ -39,8 +39,8 @@
               </div>
               <div class="top left padding-5">
                 <div class=""><span>{{user.username}}</span></div>
-                <div ngif="{{user.following}}"><button type="button" class="btn btn-success" ng-click="">follow</button></div>
-                <div ngif="!{{user.following}}"><button type="button" class="btn btn-danger" ng-click="">unfollow</button></div>
+                <div ng-show="!user.follow"><button type="button" class="btn btn-success" ng-click="toggleRelationship(user)">follow</button></div>
+                <div ng-show="user.follow"><button type="button" class="btn btn-danger" ng-click="toggleRelationship(user)">unfollow</button></div>
               </div>
             </div>
           </div>        

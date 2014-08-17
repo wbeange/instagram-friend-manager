@@ -2,6 +2,21 @@
 
   var app = angular.module('friendManager', ['ngRoute', 'ngCookies']);
 
+  /*
+
+  TODO:
+
+  fix insta auth redir after timeout
+  fix insta auth routing issues
+  friendship toggle
+  menu
+  error handling / max requests handling
+  user div styling - maybe small with hover
+  switch button on hover might look nicer
+  link to users profile on click in new window  
+
+  */
+
   //routing!!!
   /* app.config(function($routeProvider, $locationProvider){
 
@@ -31,7 +46,7 @@
 
     var url = $location.url();
 
-    console.log('url - ' + url);
+    //console.log('url - ' + url);
 
     if(access_code === undefined || url.indexOf('/access_token=') == -1)
     {
@@ -50,10 +65,22 @@
     {
       var accessCode = url.replace('/access_token=', '');
       $cookieStore.put("accessCode", accessCode);
-
       $location.url('/');
 
-      console.log('access code ' + accessCode );
+    //TODO ^^^ Fix Auth
+
+    $scope.toggleRelationship = function(user) {
+
+      //TODO: Note - it looks like it will carry accross other array. cool.
+
+      _.each($scope.users, function(u) {
+        if(u.id == user.id)
+        {          
+          u.follow = !u.follow;
+        }          
+      });
+
+    };
 
     $scope.loadUsers = function(groupId) {
 			if(groupId === 'follows')
@@ -71,7 +98,7 @@
 				$scope.users = $scope.fans;
 				$scope.usersCount = $scope.fansCount;
 			}
-			else
+			else //if(groupId === 'idols')
 			{
 				$scope.users = $scope.idols;
 				$scope.usersCount = $scope.idolsCount;
@@ -104,9 +131,31 @@
 			}]; */
 
 		//load variables
-		Instagram.getRelationshipData().then(function(data) {			
+		Instagram.getRelationshipData().then(function(data) {
 			follows = data[0];
 			followedBy = data[1];
+
+      var fans = findDifference(followedBy, follows);
+      var idols = findDifference(follows, followedBy);
+
+      _.each(follows, function(u) {
+        u.follow = true;
+      });
+
+      _.each(followedBy, function(u) {
+        if(_.has(fans, u.id) === true)
+          u.follow = false;
+        else
+          u.follow = true;
+      });
+
+      _.each(fans, function(u) {
+        u.follow = false;
+      });
+
+      _.each(idols, function(u) {
+        u.follow = true;
+      });
 
 			$scope.follows = follows;
 			$scope.followsCount = follows.length;
@@ -114,11 +163,11 @@
 			$scope.followedBy = followedBy;
 			$scope.followedByCount = followedBy.length;
 
-			$scope.fans = findDifference(follows, followedBy);
-			$scope.fansCount = $scope.fans.length;
+			$scope.fans = fans;
+			$scope.fansCount = _.size(fans);
 
-			$scope.idols = findDifference(followedBy, follows);
-			$scope.idolsCount = $scope.idols.length;
+			$scope.idols = idols;
+			$scope.idolsCount = _.size(idols);
 
 			$scope.loadUsers('follows');
 
@@ -128,7 +177,7 @@
 
 		//find difference in arrays
 		var findDifference = function(usersArray1, usersArray2) {			
-			var differenceArray = [];
+			var differenceKeyValue = {};
 
 			//check if there is a mutual 'friends' relationship
 			//ie user exists in both arrays
@@ -147,11 +196,12 @@
 
 				if(friends === false)
 				{
-					differenceArray.push(usersArray1[i]);
+          //differenceArray.push(usersArray1[i]);
+					differenceKeyValue[ usersArray1[i].id ] = usersArray1[i];
 				}
 			}
 			
-			return differenceArray;
+			return differenceKeyValue;
 		};
 
 	}]);
@@ -204,8 +254,6 @@
         //success
         function(result) {
 
-          console.log(result);
-
           //add follow users from server to array
           users = users.concat(result.data.data);
 
@@ -226,29 +274,3 @@
 	}]);
 
 })();
-
-
-	/*
-
-	TODO: When user goes to app for first time
-	- need to authenticate to get access token by doing external redirect to instagram authentication
-	- need to handle redirect somehow
-
-	var access_token = null;
-
-	if(!access_token)
-	{
-		var authorization_url = 'https://instagram.com/oauth/authorize/';
-		authorization_url += '?client_id=0ed0e250ea854a129e9a849a8ee0ed9c';
-		authorization_url += '&redirect_uri=http://localhost:8888/instagram-callback';
-		authorization_url += '&response_type=token';
-		authorization_url += '&scope=relationships';		
-
-		window.location.replace(authorization_url);
-
-		//var access_token = '183356248.0ed0e25.b2d54d90e2724be484f172484d92ace3';
-	}
-	else
-	{
-
-	} */
