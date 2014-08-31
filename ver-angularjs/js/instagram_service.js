@@ -1,62 +1,63 @@
-  //Communicates with Server
-  angular.module('friendManager.services').service('Instagram', ['$http', '$q', '$cookieStore', function($http, $q, $cookieStore) {
-    
-    //
-    //Public
-    //
+'use strict';
 
-    this.getRelationshipData = function() {
+angular.module('friendManager.services').service('Instagram', ['$http', '$q', '$cookieStore', function($http, $q, $cookieStore) {
+  
+  //
+  //Public
+  //
 
-      return $q.all([
-        getFollows(),
-        getFollowedBy()
-        ]);
-    }
+  this.getRelationshipData = function() {
 
-    //
-    //Private
-    //
+    return $q.all([
+      getFollows(),
+      getFollowedBy()
+      ]);
+  }
 
-    function getFollows() {            
-      var accessCode = $cookieStore.get("accessCode");
-      var userId = '183356248';
-      var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
+  //
+  //Private
+  //
 
-      return _getUsers(_getUsers, url, '', []);
-    }
+  var getFollows = function() {
+    var accessCode = $cookieStore.get("accessCode");
+    var userId = '183356248';
+    var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
 
-    function getFollowedBy() {
-      var accessCode = $cookieStore.get("accessCode");
-      var userId = '183356248';
-      var url = 'https://api.instagram.com/v1/users/' + userId + '/followed-by' + '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
+    return _getUsers(_getUsers, url, '', []);
+  }
 
-      return _getUsers(_getUsers, url, '', []);
-    }
+  var getFollowedBy = function() {
+    var accessCode = $cookieStore.get("accessCode");
+    var userId = '183356248';
+    var url = 'https://api.instagram.com/v1/users/' + userId + '/followed-by' + '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
 
-    //Recursively fetch users from Instagram API
-    function _getUsers(callback_fn, url, cursor, users) {
+    return _getUsers(_getUsers, url, '', []);
+  }
 
-      var fullUrl = url + cursor;
+  //Recursively fetch users from Instagram API
+  var _getUsers = function(callback_fn, url, cursor, users) {
 
-      return $http.jsonp(fullUrl).then(
-        //success
-        function(result) {
+    var fullUrl = url + cursor;
 
-          //add follow users from server to array
-          users = users.concat(result.data.data);
+    return $http.jsonp(fullUrl).then(
+      //success
+      function(result) {
 
-          //check if more data needs to be retrieved from the server
-          if(result.data.pagination.next_cursor)
-          {
-            cursor = '&cursor=' + result.data.pagination.next_cursor;
-            
-            return callback_fn(callback_fn, url, cursor, users);
-          }
-          else
-          {
-            return users;
-          }
+        //add follow users from server to array
+        users = users.concat(result.data.data);
+
+        //check if more data needs to be retrieved from the server
+        if(result.data.pagination.next_cursor)
+        {
+          cursor = '&cursor=' + result.data.pagination.next_cursor;
+          
+          return callback_fn(callback_fn, url, cursor, users);
         }
-      )};
+        else
+        {
+          return users;
+        }
+      }
+    )};
 
-  }]);
+}]);
