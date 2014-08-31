@@ -5,10 +5,15 @@
   angular.module('friendManager.controllers', []);
   angular.module('friendManager.services', ['ngCookies']);
 
-  var app = angular.module('friendManager', [
+  angular.module('friendManager', [
     'friendManager.controllers',
     'friendManager.services', 
-    'ngRoute']);
+    'ngRoute'
+  ]);
+
+  // angular.module('friendManager').run(function(Auth) {
+  //   Auth.init();
+  // });
 
   /*
 

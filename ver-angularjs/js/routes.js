@@ -1,18 +1,21 @@
-  //routing!!!
-  /* angular.module('friendManager').config(function($routeProvider, $locationProvider){
+'use strict';
 
-    $routeProvider.
-      when('/', {
-        templateUrl: 'template-users.html',
-        controller: 'UsersCtrl'
-      }).
-      when('/auth/', {
-        templateUrl: 'template-auth.html',
-        controller: 'AuthCtrl'
-      }).
-      otherwise({
-        redirectTo: '/'
-      });
+//routing!!!
+angular.module('friendManager').config(function($routeProvider, $locationProvider){
 
-      //$locationProvider.html5Mode(true);
-  }); 
+  // $routeProvider.
+  //   when('/', {
+  //     templateUrl: 'views/instagram.html',
+  //     controller: 'UsersCtrl',
+  //     reloadOnSearch: false,
+  //   }).
+  //   when('/auth/', {
+  //     templateUrl: 'views/auth.html',
+  //     controller: 'AuthCtrl'
+  //   }).
+  //   otherwise({
+  //     redirectTo: '/'
+  //   });
+
+    $locationProvider.html5Mode(true);
+});

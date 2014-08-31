@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('friendManager.services').service('Instagram', ['$http', '$q', '$cookieStore', function($http, $q, $cookieStore) {
+angular.module('friendManager.services').service('Instagram', ['$http', '$q', 'Auth', function($http, $q, Auth) {
   
   //
   //Public
@@ -19,7 +19,7 @@ angular.module('friendManager.services').service('Instagram', ['$http', '$q', '$
   //
 
   var getFollows = function() {
-    var accessCode = $cookieStore.get("accessCode");
+    var accessCode = Auth.getAccessCode();
     var userId = '183356248';
     var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
 
@@ -27,7 +27,7 @@ angular.module('friendManager.services').service('Instagram', ['$http', '$q', '$
   }
 
   var getFollowedBy = function() {
-    var accessCode = $cookieStore.get("accessCode");
+    var accessCode = Auth.getAccessCode();
     var userId = '183356248';
     var url = 'https://api.instagram.com/v1/users/' + userId + '/followed-by' + '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
 
