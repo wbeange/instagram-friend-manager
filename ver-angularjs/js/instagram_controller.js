@@ -2,7 +2,7 @@
 
 angular.module('friendManager.controllers').controller('InstagramCtrl', ['$scope', 'Instagram', '$http', '$window', '$cookieStore', '$location', function($scope, Instagram, $http, $window, $cookieStore, $location) {
 
-  console.log('users ctrl');
+  //console.log('users ctrl');
 
   //init variables
   $scope.users = [];
