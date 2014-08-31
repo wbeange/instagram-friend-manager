@@ -44,6 +44,8 @@ angular.module('friendManager.services').factory('Auth', ['$http', '$cookieStore
         }
       }
 
+      console.log('accessCode', accessCode);
+
       return accessCode;
     }
   };

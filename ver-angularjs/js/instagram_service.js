@@ -6,29 +6,30 @@ angular.module('friendManager.services').service('Instagram', ['$http', '$q', 'A
   //Public
   //
 
-  this.getRelationshipData = function() {
+  this.getRelationshipData = function(userId) {
+    return $q.all([getFollows(userId), getFollowedBy(userId)]);
+  }
 
-    return $q.all([
-      getFollows(),
-      getFollowedBy()
-      ]);
+  this.getSelfData = function() {
+    var url = 'https://api.instagram.com/v1/users/self?access_token=' + Auth.getAccessCode() + '&callback=JSON_CALLBACK';
+    return $http.jsonp(url);
   }
 
   //
   //Private
   //
 
-  var getFollows = function() {
+  //var userId = "183356248";
+
+  var getFollows = function(userId) {
     var accessCode = Auth.getAccessCode();
-    var userId = '183356248';
     var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
 
     return _getUsers(_getUsers, url, '', []);
   }
 
-  var getFollowedBy = function() {
+  var getFollowedBy = function(userId) {
     var accessCode = Auth.getAccessCode();
-    var userId = '183356248';
     var url = 'https://api.instagram.com/v1/users/' + userId + '/followed-by' + '?access_token=' + accessCode + '&callback=JSON_CALLBACK';
 
     return _getUsers(_getUsers, url, '', []);
@@ -58,6 +59,7 @@ angular.module('friendManager.services').service('Instagram', ['$http', '$q', 'A
           return users;
         }
       }
-    )};
+    )
+  };
 
 }]);

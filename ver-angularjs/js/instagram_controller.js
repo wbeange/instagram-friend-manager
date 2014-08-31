@@ -2,7 +2,7 @@
 
 angular.module('friendManager.controllers').controller('InstagramCtrl', ['$scope', 'Instagram', '$http', '$window', '$cookieStore', '$location', function($scope, Instagram, $http, $window, $cookieStore, $location) {
 
-  //console.log('users ctrl');
+  console.log('users ctrl');
 
   //init variables
   $scope.users = [];
@@ -55,17 +55,21 @@ angular.module('friendManager.controllers').controller('InstagramCtrl', ['$scope
     }
   };
 
-  // $scope.users = [{
-  //     username: "xococoho",
-  //     bio: "Professional Surfer from Hawaii 🐬 (everything I wear is @VolcomWomens) Trust.Honor.Loyalty.Love",
-  //     website: "http://www.usatoday.com/media/cinematic/video/13364719/surfer-coco-ho-on-appearing-in-espn-body-issue/",
-  //     profile_picture: "http://photos-c.ak.instagram.com/hphotos-ak-xaf1/10601766_747458748625730_1526191873_a.jpg",
-  //     full_name: "Coco Ho",
-  //     id: "10908579"        
-  //   }];
+  //load self user data, relationship data
+  Instagram.getSelfData().success(function(data) {
+    if(data.meta.code === 200) {
+      $scope.userSelfData = data.data;
 
-  //load variables
-  Instagram.getRelationshipData().then(function(data) {
+      Instagram.getRelationshipData($scope.userSelfData.id).then(function(data) {
+        parseRelationshipData(data);
+      });      
+    } else {
+      console.log('err');
+    }
+  });
+
+
+  var parseRelationshipData = function(data) {
     var follows = data[0];
     var followedBy = data[1];
 
@@ -103,9 +107,8 @@ angular.module('friendManager.controllers').controller('InstagramCtrl', ['$scope
     $scope.idols = idols;
     $scope.idolsCount = _.size(idols);
 
-    $scope.loadUsers('follows');
-
-  });
+    $scope.loadUsers('follows');    
+  }
 
   //find difference in arrays
   var findDifference = function(usersArray1, usersArray2) {
