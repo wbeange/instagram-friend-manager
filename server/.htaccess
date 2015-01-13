@@ -1,8 +1,0 @@
-<IfModule mod_rewrite.c>
-    Options -MultiViews
-
-    RewriteEngine On
-    RewriteBase /instagram-friends-manager/server/web
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^ insta.php [QSA,L]
-</IfModule>
