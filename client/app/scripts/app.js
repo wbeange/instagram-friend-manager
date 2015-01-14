@@ -10,7 +10,8 @@
  */
 angular
   .module('clientApp', [
-    'ngRoute'
+    'ngRoute',
+    'ngCookies'
   ])
   .config(function ($routeProvider) {
     $routeProvider
@@ -30,4 +31,9 @@ angular
   // enable html5Mode for pushstate ('#'-less URLs)
   .config(function($locationProvider) {
     $locationProvider.html5Mode(true);
+  })
+
+  // authentication
+  .run(function($rootScope, Auth) {
+    Auth.init();
   });
