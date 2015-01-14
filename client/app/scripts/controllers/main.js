@@ -18,9 +18,10 @@ angular.module('clientApp')
     UserModel.get().then(function(data) {
       var userId = data.id;
 
-      FollowerModel.all(userId).then(function(data) {
-        
-        console.log('MainCtrl FollowerModel.all() data', data);
+      FollowerModel.all(userId).then(function(followers) {
+        console.log('MainCtrl FollowerModel.all()', followers);
+
+        $scope.followers = followers;
       });      
     })
   });
