@@ -25,4 +25,9 @@ angular
       .otherwise({
         redirectTo: '/'
       });
+  })
+
+  // enable html5Mode for pushstate ('#'-less URLs)
+  .config(function($locationProvider) {
+    $locationProvider.html5Mode(true);
   });
