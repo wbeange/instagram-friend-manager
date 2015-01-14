@@ -1,21 +1,21 @@
 'use strict';
 
-angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth) {
+angular.module('clientApp').factory('UserModel', function($q, $http, Auth) {
 
   //
   // constructor
   //
 
-  function FollowerModel() {
-
+  function UserModel() {
+    
   }  
 
   //
   // public
   //
 
-  FollowerModel.prototype.all = function(userId) {    
-    var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
+  UserModel.prototype.get = function() {
+    var url = "https://api.instagram.com/v1/users/self?access_token=" + Auth.accessToken() + "&callback=JSON_CALLBACK";
 
     var deferred = $q.defer();
 
@@ -31,5 +31,5 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth) {
     return deferred.promise;
   }
 
-  return new FollowerModel();
+  return new UserModel();
 });

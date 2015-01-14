@@ -23,23 +23,6 @@ angular.module('clientApp')
             var hash = $location.hash();
             var hashExploded = hash.split('=');
             accessToken = hashExploded[1];
-
-            self.getUserData().then(
-              
-              // success
-              function(data) {
-                console.log('getUserData success', data);
-
-                user = data;
-
-                // finished auth, manually clean url and redir to index
-                $location.hash(null);
-                $location.url('');
-              
-              // error
-              }, function(data) {
-
-              });
           
           // redirect to instagram website
           } else {
@@ -53,32 +36,6 @@ angular.module('clientApp')
       console.log('Auth.isSignedIn() - accessToken', accessToken);
 
       return accessToken !== undefined;
-    },
-
-    getUserData: function() {
-      var url = "https://api.instagram.com/v1/users/self?access_token=" + accessToken + "&callback=JSON_CALLBACK";
-
-      // using jsonp for oauth (implicit) b/c instagram api does not support CORS
-      var deferred = $q.defer();
-
-      $http.jsonp(url).then(function(results) {
-        // double data.data because of jsonp return
-        deferred.resolve(results.data.data);
-      },
-
-      function(results) {
-        deferred.reject(results);
-      });
-
-      return deferred.promise;
-    },
-
-    user: function() {
-      return user;
-    },
-
-    userId: function() {
-      return user.id;
     },
 
     authenticate: function() {
