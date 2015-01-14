@@ -39,7 +39,7 @@ angular.module('clientApp')
     },
 
     authenticate: function() {
-      var redirectUrl = 'http://localhost:9000/';
+      var redirectUrl = 'http://localhost:9001/';
 
       var authorizationUrl = 'https://instagram.com/oauth/authorize/';
       authorizationUrl += '?client_id=0ed0e250ea854a129e9a849a8ee0ed9c';

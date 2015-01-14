@@ -9,12 +9,6 @@
  */
 angular.module('clientApp')
   .controller('MainCtrl', function ($scope, UserModel, FollowerModel) {
-    $scope.awesomeThings = [
-      'HTML5 Boilerplate',
-      'AngularJS',
-      'Karma'
-    ];
-
     UserModel.get().then(function(data) {
       var userId = data.id;
 
