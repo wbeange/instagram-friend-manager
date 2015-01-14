@@ -16,16 +16,13 @@ angular.module('clientApp')
         if(!self.isSignedIn()) {
 
           // TODO: move this to a separate URL
-          // redirect case: extract access token from hash
+          // redirect case
           if($location.hash() !== '') {
             
+            // extract access token from hash
             var hash = $location.hash();
             var hashExploded = hash.split('=');
-
             accessToken = hashExploded[1];
-
-            
-            $location.hash(null);
 
             self.getUserData().then(
               
