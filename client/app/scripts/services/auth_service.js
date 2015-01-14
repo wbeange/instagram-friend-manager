@@ -1,9 +1,10 @@
 'use strict';
 
 angular.module('clientApp')
-  .factory('Auth', ['$rootScope', '$http', '$cookieStore', '$location', function($rootScope, $http, $cookieStore, $location) {
+  .factory('Auth', ['$rootScope', '$http', '$cookieStore', '$location', '$q', function($rootScope, $http, $cookieStore, $location, $q) {
 
   var accessToken;
+  var user;
 
   return {
     init: function() {
@@ -23,25 +24,59 @@ angular.module('clientApp')
 
             accessToken = hashExploded[1];
 
-            // finished auth, manually clean url and redir to index
-            // $location.hash(null);
-            $location.url('');
+            
+            $location.hash(null);
+
+            self.getUserData().then(
+              
+              // success
+              function(data) {
+                console.log('getUserData success', data);
+
+                user = data;
+
+                // finished auth, manually clean url and redir to index
+                $location.hash(null);
+                $location.url('');
+              
+              // error
+              }, function(data) {
+
+              });
           
           // redirect to instagram website
           } else {
-            self.signIn();
+            self.authenticate();
           }
         }
       });
     },
 
     isSignedIn: function() {
-      console.log('accessToken', accessToken);
+      console.log('Auth.isSignedIn() - accessToken', accessToken);
 
       return accessToken !== undefined;
     },
 
-    signIn: function() {
+    getUserData: function() {
+      var url = "https://api.instagram.com/v1/users/self?access_token=" + accessToken + "&callback=JSON_CALLBACK";
+
+      // using jsonp for oauth (implicit) b/c instagram api does not support CORS
+      var deferred = $q.defer();
+
+      $http.jsonp(url).then(function(results) {
+        // double data.data because of jsonp return
+        deferred.resolve(results.data.data);
+      },
+
+      function(results) {
+        deferred.reject(results);
+      });
+
+      return deferred.promise;
+    },
+
+    authenticate: function() {
       var redirectUrl = 'http://localhost:9000/';
 
       var authorizationUrl = 'https://instagram.com/oauth/authorize/';
@@ -51,6 +86,10 @@ angular.module('clientApp')
       authorizationUrl += '&scope=relationships';
 
       window.location.href = authorizationUrl;
+    },    
+
+    getAccessToken: function() {
+      return accessToken;
     }
   };
 
