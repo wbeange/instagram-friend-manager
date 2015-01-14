@@ -73,6 +73,14 @@ angular.module('clientApp')
       return deferred.promise;
     },
 
+    user: function() {
+      return user;
+    },
+
+    userId: function() {
+      return user.id;
+    },
+
     authenticate: function() {
       var redirectUrl = 'http://localhost:9000/';
 
@@ -85,7 +93,7 @@ angular.module('clientApp')
       window.location.href = authorizationUrl;
     },    
 
-    getAccessToken: function() {
+    accessToken: function() {
       return accessToken;
     }
   };
