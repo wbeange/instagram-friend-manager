@@ -11,26 +11,46 @@ angular.module('clientApp')
 
       $rootScope.$on('$routeChangeStart', function(event, next, current) {
         
+        // check if we are signed in
         if(!self.isSignedIn()) {
-          self.signIn();
+
+          // TODO: move this to a separate URL
+          // redirect case: extract access token from hash
+          if($location.hash() !== '') {
+            
+            var hash = $location.hash();
+            var hashExploded = hash.split('=');
+
+            accessToken = hashExploded[1];
+
+            // finished auth, manually clean url and redir to index
+            // $location.hash(null);
+            $location.url('');
+          
+          // redirect to instagram website
+          } else {
+            self.signIn();
+          }
         }
       });
     },
 
     isSignedIn: function() {
+      console.log('accessToken', accessToken);
+
       return accessToken !== undefined;
     },
 
     signIn: function() {
-      var redirectUrl = 'http://localhost/';
+      var redirectUrl = 'http://localhost:9000/';
 
-      var authorization_url = 'https://instagram.com/oauth/authorize/';
-      authorization_url += '?client_id=0ed0e250ea854a129e9a849a8ee0ed9c';
-      authorization_url += '&response_type=token';
-      authorization_url += '&redirect_uri=' + redirectUrl;
-      authorization_url += '&scope=relationships';
+      var authorizationUrl = 'https://instagram.com/oauth/authorize/';
+      authorizationUrl += '?client_id=0ed0e250ea854a129e9a849a8ee0ed9c';
+      authorizationUrl += '&response_type=token';
+      authorizationUrl += '&redirect_uri=' + redirectUrl;
+      authorizationUrl += '&scope=relationships';
 
-      window.location.href = authorization_url;
+      window.location.href = authorizationUrl;
     }
   };
 
