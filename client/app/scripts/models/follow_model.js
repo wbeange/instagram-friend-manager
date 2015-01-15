@@ -1,62 +1,30 @@
 'use strict';
 
-angular.module('clientApp').factory('FollowModel', function($q, $http, Auth) {
-
+angular.module('clientApp').factory('FollowModel', function($q, $http, Auth, Model) {
+  
   //
   // constructor
   //
 
   function FollowModel() {
-
+    Model.call(this, 'follow');
   }
+
+  //
+  // inheritence
+  //
+
+  FollowModel.prototype = Object.create(Model.prototype);
+  FollowModel.prototype.constructor = FollowModel;
 
   //
   // public
   //
 
-  var cursor = '',
-      users = [],
-      url;
+  FollowModel.prototype.all = function(userId) {
+    var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
 
-  FollowModel.prototype.all = function(userId) {    
-    url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
-    cursor = '';
-    users = [];
-
-    return this.recursiveAll();
-  }
-
-  FollowModel.prototype.recursiveAll = function(deferred) {
-    if(deferred === undefined) {
-      var deferred = $q.defer();
-    }
-    
-    var fullUrl = url + cursor;
-
-    var self = this;
-
-    $http.jsonp(fullUrl).then(
-      // success
-      function(results) {    
-        // build return array
-        users = users.concat(results.data.data);
-
-        // if(results.data.pagination.next_cursor) {
-        //   cursor = '&cursor=' + results.data.pagination.next_cursor;
-
-        //   self.recursiveAll(deferred);
-        // } else {
-          // double data.data because of jsonp return
-          deferred.resolve(users);
-        // }
-      },
-
-      // error
-      function() {
-        deferred.reject();
-      });
-
-    return deferred.promise;
+    return Model.prototype.all.call(this, userId, url);
   }
 
   return new FollowModel();

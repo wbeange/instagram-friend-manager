@@ -12,16 +12,16 @@ angular.module('clientApp')
     UserModel.get().then(function(data) {
       var userId = data.id;
 
-      // FollowModel.all(userId).then(function(follows) {
-      //   $scope.follows = follows;
-      // });
+      FollowModel.all(userId).then(function(follows) {
+        $scope.follows = follows;
+      });
 
       // FollowedByModel.all(userId).then(function(followedBys) {
-      //   $scope.followedBys = followedBys;
+      //   $scope.follows = followedBys;
       // });
 
-      FanModel.all(userId).then(function(fans) {
-        $scope.follows = fans;
-      });
+      // FanModel.all(userId)1then(function(fans) {
+      //   $scope.follows = fans;
+      // });
     });
   });
