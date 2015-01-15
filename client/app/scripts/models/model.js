@@ -19,10 +19,14 @@ angular.module('clientApp').factory('Model', function($q, $http) {
   Model.prototype.all = function(userId, url) {
     this.url = url;
     
-    return this.recursiveAll();
+    return this._recursiveAll();
   }
 
-  Model.prototype.recursiveAll = function(deferred) {
+  //
+  // private
+  //
+
+  Model.prototype._recursiveAll = function(deferred) {
     if(deferred === undefined) {
       var deferred = $q.defer();
     }
@@ -40,7 +44,7 @@ angular.module('clientApp').factory('Model', function($q, $http) {
         if(results.data.pagination.next_cursor) {
           self.cursor = '&cursor=' + results.data.pagination.next_cursor;
 
-          self.recursiveAll(deferred);
+          self._recursiveAll(deferred);
         } else {
           // double data.data because of jsonp return
           deferred.resolve(self.users);
