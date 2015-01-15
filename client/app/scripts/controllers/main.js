@@ -16,6 +16,6 @@ angular.module('clientApp')
         console.log('MainCtrl FollowerModel.all()', followers);
 
         $scope.followers = followers;
-      });      
+      });
     })
   });

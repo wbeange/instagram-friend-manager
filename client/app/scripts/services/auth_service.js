@@ -23,6 +23,8 @@ angular.module('clientApp')
             var hash = $location.hash();
             var hashExploded = hash.split('=');
             accessToken = hashExploded[1];
+
+            $location.url('');
           
           // redirect to instagram website
           } else {
