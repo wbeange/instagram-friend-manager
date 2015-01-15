@@ -8,14 +8,16 @@
  * Controller of the clientApp
  */
 angular.module('clientApp')
-  .controller('MainCtrl', function ($scope, UserModel, FollowerModel) {
+  .controller('MainCtrl', function ($scope, UserModel, FollowModel, FollowedByModel) {
     UserModel.get().then(function(data) {
       var userId = data.id;
 
-      FollowerModel.all(userId).then(function(followers) {
-        console.log('MainCtrl FollowerModel.all()', followers);
-
-        $scope.followers = followers;
+      FollowModel.all(userId).then(function(follows) {
+        $scope.follows = follows;
       });
-    })
+
+      FollowedByModel.all(userId).then(function(followedBys) {
+        $scope.followedBys = followedBys;
+      });
+    });
   });

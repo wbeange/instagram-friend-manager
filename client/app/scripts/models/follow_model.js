@@ -1,12 +1,12 @@
 'use strict';
 
-angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth) {
+angular.module('clientApp').factory('FollowModel', function($q, $http, Auth) {
 
   //
   // constructor
   //
 
-  function FollowerModel() {
+  function FollowModel() {
 
   }
 
@@ -15,18 +15,18 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth) {
   //
 
   var cursor = '',
-      followers = [],
+      users = [],
       url;
 
-  FollowerModel.prototype.all = function(userId) {    
+  FollowModel.prototype.all = function(userId) {    
     url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
     cursor = '';
-    followers = [];
+    users = [];
 
     return this.recursiveAll();
   }
 
-  FollowerModel.prototype.recursiveAll = function(deferred) {
+  FollowModel.prototype.recursiveAll = function(deferred) {
     if(deferred === undefined) {
       var deferred = $q.defer();
     }
@@ -39,16 +39,16 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth) {
       // success
       function(results) {    
         // build return array
-        followers = followers.concat(results.data.data);
+        users = users.concat(results.data.data);
 
-        if(results.data.pagination.next_cursor) {
-          cursor = '&cursor=' + results.data.pagination.next_cursor;
+        // if(results.data.pagination.next_cursor) {
+        //   cursor = '&cursor=' + results.data.pagination.next_cursor;
 
-          self.recursiveAll(deferred);
-        } else {
+        //   self.recursiveAll(deferred);
+        // } else {
           // double data.data because of jsonp return
-          deferred.resolve(followers);
-        }      
+          deferred.resolve(users);
+        // }
       },
 
       // error
@@ -59,5 +59,5 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth) {
     return deferred.promise;
   }
 
-  return new FollowerModel();
+  return new FollowModel();
 });
