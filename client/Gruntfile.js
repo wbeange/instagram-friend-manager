@@ -74,8 +74,9 @@ module.exports = function (grunt) {
       livereload: {
         options: {
           open: true,
-          middleware: function (connect) {
+          middleware: function (connect, options, middlewares) {
             return [
+              require('grunt-connect-prism/middleware'),
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -108,6 +109,24 @@ module.exports = function (grunt) {
           base: '<%= yeoman.dist %>'
         }
       }
+    },
+
+    // prism library so I can mock server requests / work offline
+    prism: {
+      options: {
+        mocksPath: './mocks',
+        host: 'api.instagram.com/',
+        port: 8080,
+        https: false,
+        context: '/',
+        changeOrigin: true
+      },
+
+      // modes
+      proxy:      { options: { mode: 'proxy' } },
+      record:     { options: { mode: 'record' } },
+      mock:       { options: { mode: 'mock' } },
+      mockrecord: { options: { mode: 'mockrecord' } }
     },
 
     // Make sure code styles are up to par and there are no obvious mistakes
@@ -363,6 +382,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'wiredep',
+      'prism:record',
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
@@ -405,4 +425,7 @@ module.exports = function (grunt) {
     'test',
     'build'
   ]);
+
+  grunt.loadNpmTasks('grunt-connect-prism');
+
 };
