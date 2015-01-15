@@ -6,6 +6,8 @@ angular.module('clientApp')
   var accessToken;
   var user;
 
+  accessToken = $cookieStore.get('accessToken');
+
   return {
     init: function() {
       var self = this;
@@ -23,6 +25,9 @@ angular.module('clientApp')
             var hash = $location.hash();
             var hashExploded = hash.split('=');
             accessToken = hashExploded[1];
+
+            $cookieStore.put('accessToken', accessToken);
+
 
             $location.url('');
           
