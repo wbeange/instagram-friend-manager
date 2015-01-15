@@ -2,6 +2,8 @@
 
 angular.module('clientApp').factory('FollowModel', function($q, $http, Auth, Model) {
   
+  var users;
+
   //
   // constructor
   //
@@ -22,9 +24,29 @@ angular.module('clientApp').factory('FollowModel', function($q, $http, Auth, Mod
   //
 
   FollowModel.prototype.all = function(userId) {
-    var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
+    if(users === undefined) {
+      var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
 
-    return Model.prototype.all.call(this, userId, url);
+      var deferred = $q.defer();
+      
+      Model.prototype.all.call(this, userId, url).then(
+        function(result) {
+          // intercept users and store locally ;)
+          users = result;
+
+          deferred.resolve(users);
+        },
+        function() {
+          deferred.reject();
+        });
+
+      return deferred.promise;
+    } else {
+      
+      var deferred = $q.defer();
+      deferred.resolve(users);
+      return deferred.promise;
+    }
   }
 
   return new FollowModel();
