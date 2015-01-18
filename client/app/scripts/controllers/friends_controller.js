@@ -2,9 +2,9 @@
 
 angular.module('clientApp').controller('FriendsCtrl', function ($scope, UserModel) {
 
-  // UserModel.get().then(function(data) {
-    // var userId = data.id;
+  UserModel.get().then(function(data) {
+    var userId = data.id;
 
-    $scope.view = 'friends';
-  // });
+    // $scope.view = 'friends';
+  });
 });

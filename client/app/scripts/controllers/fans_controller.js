@@ -2,13 +2,11 @@
 
 angular.module('clientApp').controller('FansCtrl', function ($scope, UserModel, DifferenceModel) {
 
-  // UserModel.get().then(function(data) {
-    // var userId = data.id;
+  UserModel.get().then(function(data) {
+    var userId = data.id;
 
-    $scope.view = 'fans';
-
-    // DifferenceModel.fans(userId).then(function(fans) {
-    //   $scope.follows = fans;
-    // });
-  // });
+    DifferenceModel.fans(userId).then(function(fans) {
+      $scope.users = fans;
+    });
+  });
 });

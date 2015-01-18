@@ -2,13 +2,13 @@
 
 angular.module('clientApp').controller('IdolsCtrl', function ($scope, UserModel, DifferenceModel) {
 
-  // UserModel.get().then(function(data) {
-    // var userId = data.id;
+  UserModel.get().then(function(data) {
+    var userId = data.id;
 
     $scope.view = 'idols';
 
-    // DifferenceModel.idols(userId).then(function(fans) {
-    //   $scope.follows = fans;
-    // });
-  // });
+    DifferenceModel.idols(userId).then(function(fans) {
+      $scope.users = fans;
+    });
+  });
 });
