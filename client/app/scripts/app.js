@@ -15,19 +15,14 @@ angular
   ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {
-        templateUrl: 'views/main.html',
-        controller: 'MainCtrl',
-        reloadOnSearch: false
-      })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl'
-      })
-      .otherwise({
-        redirectTo: '/',
-        reloadOnSearch: false
-      });
+      .when('/', {})
+      .when('/followers',   { controller: 'FollowersCtrl',  templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/following',   { controller: 'FollowingCtrl',  templateUrl: 'views/main.html' })
+      .when('/friends',     { controller: 'FriendsCtrl',    templateUrl: 'views/main.html' })
+      .when('/fans',        { controller: 'FansCtrl',       templateUrl: 'views/main.html' })
+      .when('/idols',       { controller: 'IdolsCtrl',      templateUrl: 'views/main.html' })
+
+      .otherwise({ redirectTo: '/followers', reloadOnSearch: false });
   })
 
   // enable html5Mode for pushstate ('#'-less URLs)

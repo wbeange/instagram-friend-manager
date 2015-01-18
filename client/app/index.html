@@ -24,7 +24,13 @@
     <!-- Add your site or application content here -->
     <div class="container">
       <div class="header">
-        <h3 class="text-muted">client</h3>
+        <nav>
+          <a href="/followers">followers</a>
+          <a href="/following">following</a>
+          <a href="/friends">friends</a>
+          <a href="/fans">fans</a>
+          <a href="/idols">idols</a>
+        </nav>
       </div>
 
       <div ng-view=""></div>
@@ -76,7 +82,11 @@
 
     <script src="scripts/directives/wb_tab_select_directive.js"></script>
 
-    <script src="scripts/controllers/main.js"></script>        
+    <script src="scripts/controllers/followers_controller.js"></script>
+    <script src="scripts/controllers/following_controller.js"></script>
+    <script src="scripts/controllers/friends_controller.js"></script>
+    <script src="scripts/controllers/fans_controller.js"></script>
+    <script src="scripts/controllers/idols_controller.js"></script>
     <!-- endbuild -->
 </body>
 </html>
