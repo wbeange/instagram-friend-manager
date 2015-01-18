@@ -1,0 +1,9 @@
+{
+  "requestUrl": "/",
+  "contentType": "application/json",
+  "statusCode": 500,
+  "data": {
+    "error": "proxy_error",
+    "reason": "getaddrinfo ENOTFOUND"
+  }
+}

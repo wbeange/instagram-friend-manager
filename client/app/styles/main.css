@@ -79,6 +79,11 @@ body {
 }
 
 
+.nav-wide > li {
+  padding-right: 10px;
+}
+
+
 /* my custom stylesheet
 pulling all style conventions used on my past project */
 
@@ -95,6 +100,7 @@ pulling all style conventions used on my past project */
 .border-black { border-color: #000000; }
 .border-grey { border-color: #D7D7D7; }
 
+.bold { font-weight: bold; }
 
 .top { vertical-align: top; }
 .inline-block { display: inline-block; }

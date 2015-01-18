@@ -24,11 +24,6 @@
     <!-- Add your site or application content here -->
     <div class="container">
       <div class="header">
-        <ul class="nav nav-pills pull-right">
-          <li class="active"><a ng-href="/">Home</a></li>
-          <li><a ng-href="/about">About</a></li>
-          <li><a ng-href="/">Contact</a></li>
-        </ul>
         <h3 class="text-muted">client</h3>
       </div>
 
@@ -68,18 +63,20 @@
     <!-- endbower -->
     <!-- endbuild -->
 
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/app.js"></script>
-        
-        <script src="scripts/models/model.js"></script>
-        <script src="scripts/models/user_model.js"></script>
-        <script src="scripts/models/follow_model.js"></script>
-        <script src="scripts/models/followed_by_model.js"></script>
-        <script src="scripts/models/difference_model.js"></script>
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/app.js"></script>
+    
+    <script src="scripts/models/model.js"></script>
+    <script src="scripts/models/user_model.js"></script>
+    <script src="scripts/models/follow_model.js"></script>
+    <script src="scripts/models/followed_by_model.js"></script>
+    <script src="scripts/models/difference_model.js"></script>
 
-        <script src="scripts/services/auth_service.js"></script>
-        <script src="scripts/controllers/main.js"></script>
-        <script src="scripts/controllers/about.js"></script>        
-        <!-- endbuild -->
+    <script src="scripts/services/auth_service.js"></script>
+
+    <script src="scripts/directives/wb_tab_select_directive.js"></script>
+
+    <script src="scripts/controllers/main.js"></script>        
+    <!-- endbuild -->
 </body>
 </html>

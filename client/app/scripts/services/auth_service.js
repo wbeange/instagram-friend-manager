@@ -1,7 +1,6 @@
 'use strict';
 
-angular.module('clientApp')
-  .factory('Auth', ['$rootScope', '$http', '$cookieStore', '$location', '$q', function($rootScope, $http, $cookieStore, $location, $q) {
+angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStore', '$location', '$q', function($rootScope, $http, $cookieStore, $location, $q) {
 
   var accessToken;
   var user;
