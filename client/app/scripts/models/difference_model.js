@@ -16,27 +16,21 @@ angular.module('clientApp').factory('DifferenceModel', function($q, $http, Follo
 
   // find difference in arrays
   DifferenceModel.prototype.findDifference = function(usersArray1, usersArray2) {
-    var differenceKeyValue = {};
+    var userIds = _.difference(_.pluck(usersArray1, 'id'), _.pluck(usersArray2, 'id'));
 
-    //check if there is a mutual 'friends' relationship
-    //ie user exists in both arrays
-    for(var i=0; i<usersArray1.length; i++) {
-      var friends = false;
-
-      for(var j=0; j<usersArray2.length; j++) {
-        if(usersArray1[i].id == usersArray2[j].id) {
-          friends = true;
-          continue;
-        }
-      }
-
-      if(friends === false) {
-        differenceKeyValue[ usersArray1[i].id ] = usersArray1[i];
-      }
-    }
-    
-    return differenceKeyValue;
+    return _.filter(usersArray1, function(user) {
+      return _.contains(userIds, user.id);
+    });
   };
+
+  // find mutual connections
+  DifferenceModel.prototype.findFriends = function(usersArray1, usersArray2) {
+    var userIds = _.intersection(_.pluck(usersArray1, 'id'), _.pluck(usersArray2, 'id'));
+
+    return _.filter(usersArray2, function(user) {
+      return _.contains(userIds, user.id);
+    });
+  };  
 
   DifferenceModel.prototype.all = function(userId) {
     var urlCalls = [
@@ -73,10 +67,10 @@ angular.module('clientApp').factory('DifferenceModel', function($q, $http, Follo
     this.all(userId).then(
       // success
       function(results) {    
-        var follows = results[0];
-        var followedBy = results[1];
+        var following = results[0];
+        var followers = results[1];
         
-        var fans = self.findDifference(followedBy, follows);
+        var fans = self.findDifference(followers, following);
         
         deferred.resolve(fans);
       },
@@ -97,12 +91,12 @@ angular.module('clientApp').factory('DifferenceModel', function($q, $http, Follo
     this.all(userId).then(
       // success
       function(results) {    
-        var follows = results[0];
-        var followedBy = results[1];
+        var following = results[0];
+        var followers = results[1];
+
+        var idols = self.findDifference(following, followers);
         
-        var fans = self.findDifference(follows, followedBy);
-        
-        deferred.resolve(fans);
+        deferred.resolve(idols);
       },
 
       // error
@@ -111,7 +105,31 @@ angular.module('clientApp').factory('DifferenceModel', function($q, $http, Follo
       });
 
     return deferred.promise;
-  }  
+  }
+
+  DifferenceModel.prototype.friends = function(userId) {
+    var deferred = $q.defer();
+
+    var self = this;
+
+    this.all(userId).then(
+      // success
+      function(results) {    
+        var following = results[0];
+        var followers = results[1];
+        
+        var friends = self.findFriends(following, followers);
+        
+        deferred.resolve(friends);
+      },
+
+      // error
+      function() {
+        deferred.reject();
+      });
+
+    return deferred.promise;
+  }
 
   return new DifferenceModel();
 });

@@ -5,8 +5,8 @@ angular.module('clientApp').controller('FollowingCtrl', function ($scope, UserMo
   UserModel.get().then(function(data) {
     var userId = data.id;
 
-    FollowingModel.all(userId).then(function(follows) {
-      $scope.users = follows;
+    FollowingModel.all(userId).then(function(following) {
+      $scope.users = following;
     });
   });
 });

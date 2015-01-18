@@ -5,8 +5,8 @@ angular.module('clientApp').controller('IdolsCtrl', function ($scope, UserModel,
   UserModel.get().then(function(data) {
     var userId = data.id;
 
-    DifferenceModel.idols(userId).then(function(fans) {
-      $scope.users = fans;
+    DifferenceModel.idols(userId).then(function(idols) {
+      $scope.users = idols;
     });
   });
 });
