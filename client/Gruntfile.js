@@ -12,6 +12,8 @@ module.exports = function (grunt) {
   // Load grunt tasks automatically
   require('load-grunt-tasks')(grunt);
 
+  var modRewrite = require('connect-modrewrite');
+
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
@@ -76,6 +78,9 @@ module.exports = function (grunt) {
           open: true,
           middleware: function (connect, options, middlewares) {
             return [
+              modRewrite([
+                '!\\.html|\\.js|\\.css|\\.png$ /index.html [L]'
+              ]),            
               // require('grunt-connect-prism/middleware'),
               connect.static('.tmp'),
               connect().use(
@@ -83,6 +88,9 @@ module.exports = function (grunt) {
                 connect.static('./bower_components')
               ),
               connect.static(appConfig.app)
+
+
+
             ];
           }
         }

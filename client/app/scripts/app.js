@@ -15,12 +15,11 @@ angular
   ])
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/', {})
       .when('/followers',   { controller: 'FollowersCtrl',  templateUrl: 'views/main.html', reloadOnSearch: false })
-      .when('/following',   { controller: 'FollowingCtrl',  templateUrl: 'views/main.html' })
-      .when('/friends',     { controller: 'FriendsCtrl',    templateUrl: 'views/main.html' })
-      .when('/fans',        { controller: 'FansCtrl',       templateUrl: 'views/main.html' })
-      .when('/idols',       { controller: 'IdolsCtrl',      templateUrl: 'views/main.html' })
+      .when('/following',   { controller: 'FollowingCtrl',  templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/friends',     { controller: 'FriendsCtrl',    templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/fans',        { controller: 'FansCtrl',       templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/idols',       { controller: 'IdolsCtrl',      templateUrl: 'views/main.html', reloadOnSearch: false })
 
       .otherwise({ redirectTo: '/followers', reloadOnSearch: false });
   })
