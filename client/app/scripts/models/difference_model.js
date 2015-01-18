@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('clientApp').factory('DifferenceModel', function($q, $http, FollowModel, FollowedByModel) {
+angular.module('clientApp').factory('DifferenceModel', function($q, $http, FollowingModel, FollowerModel) {
 
   //
   // constructor
@@ -40,8 +40,8 @@ angular.module('clientApp').factory('DifferenceModel', function($q, $http, Follo
 
   DifferenceModel.prototype.all = function(userId) {
     var urlCalls = [
-      FollowModel.all(userId),
-      FollowedByModel.all(userId)
+      FollowingModel.all(userId),
+      FollowerModel.all(userId)
     ];
 
     var deferred = $q.defer();

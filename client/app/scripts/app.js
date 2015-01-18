@@ -1,18 +1,12 @@
 'use strict';
 
-/**
- * @ngdoc overview
- * @name clientApp
- * @description
- * # clientApp
- *
- * Main module of the application.
- */
-angular
+angular  
+  // app
   .module('clientApp', [
     'ngRoute',
     'ngCookies'
   ])
+  // routes
   .config(function ($routeProvider) {
     $routeProvider
       .when('/followers',   { controller: 'FollowersCtrl',  templateUrl: 'views/main.html', reloadOnSearch: false })

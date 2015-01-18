@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('clientApp').controller('FollowingCtrl', function ($scope, UserModel, FollowModel) {
+angular.module('clientApp').controller('FollowingCtrl', function ($scope, UserModel, FollowingModel) {
 
   UserModel.get().then(function(data) {
     var userId = data.id;
 
-    FollowModel.all(userId).then(function(follows) {
+    FollowingModel.all(userId).then(function(follows) {
       $scope.users = follows;
     });
   });

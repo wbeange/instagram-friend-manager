@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('clientApp').factory('FollowModel', function($q, $http, Auth, Model) {
+angular.module('clientApp').factory('FollowingModel', function($q, $http, Auth, Model) {
   
   var users;
 
@@ -8,7 +8,7 @@ angular.module('clientApp').factory('FollowModel', function($q, $http, Auth, Mod
   // constructor
   //
 
-  function FollowModel() {
+  function FollowingModel() {
     Model.call(this, 'follow');
   }
 
@@ -16,14 +16,14 @@ angular.module('clientApp').factory('FollowModel', function($q, $http, Auth, Mod
   // inheritence
   //
 
-  FollowModel.prototype = Object.create(Model.prototype);
-  FollowModel.prototype.constructor = FollowModel;
+  FollowingModel.prototype = Object.create(Model.prototype);
+  FollowingModel.prototype.constructor = FollowingModel;
 
   //
   // public
   //
 
-  FollowModel.prototype.all = function(userId) {
+  FollowingModel.prototype.all = function(userId) {
     if(users === undefined) {
       var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
 
@@ -49,5 +49,5 @@ angular.module('clientApp').factory('FollowModel', function($q, $http, Auth, Mod
     }
   }
 
-  return new FollowModel();
+  return new FollowingModel();
 });

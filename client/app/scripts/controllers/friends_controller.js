@@ -5,6 +5,6 @@ angular.module('clientApp').controller('FriendsCtrl', function ($scope, UserMode
   UserModel.get().then(function(data) {
     var userId = data.id;
 
-    // $scope.view = 'friends';
+    
   });
 });
