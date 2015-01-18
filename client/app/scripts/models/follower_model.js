@@ -2,12 +2,14 @@
 
 angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth, Model) {
   
+  var users;
+
   //
   // constructor
   //
 
   function FollowerModel() {
-    Model.call(this, 'followedBy');
+    Model.call(this, 'follower');
   }
 
   //
@@ -22,10 +24,31 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth, M
   //
 
   FollowerModel.prototype.all = function(userId) {
-    var url = 'https://api.instagram.com/v1/users/' + userId + '/followed-by' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
+    if(users === undefined) {
+      var url = 'https://api.instagram.com/v1/users/' + userId + '/followed-by' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
 
-    return Model.prototype.all.call(this, userId, url);
-  }
+      var deferred = $q.defer();
+      
+      Model.prototype.all.call(this, userId, url).then(
+        function(result) {
+          
+          // intercept users and store locally
+          users = result;
+
+          deferred.resolve(users);
+        },
+        function() {
+          deferred.reject();
+        });
+
+      return deferred.promise;
+    } else {
+      
+      var deferred = $q.defer();
+      deferred.resolve(users);
+      return deferred.promise;
+    }
+  }  
 
   return new FollowerModel();
 });

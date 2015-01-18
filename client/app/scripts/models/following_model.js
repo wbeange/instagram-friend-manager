@@ -9,7 +9,7 @@ angular.module('clientApp').factory('FollowingModel', function($q, $http, Auth, 
   //
 
   function FollowingModel() {
-    Model.call(this, 'follow');
+    Model.call(this, 'following');
   }
 
   //
@@ -31,7 +31,8 @@ angular.module('clientApp').factory('FollowingModel', function($q, $http, Auth, 
       
       Model.prototype.all.call(this, userId, url).then(
         function(result) {
-          // intercept users and store locally ;)
+          
+          // intercept users and store locally
           users = result;
 
           deferred.resolve(users);
