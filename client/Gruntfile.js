@@ -76,7 +76,7 @@ module.exports = function (grunt) {
           open: true,
           middleware: function (connect, options, middlewares) {
             return [
-              require('grunt-connect-prism/middleware'),
+              // require('grunt-connect-prism/middleware'),
               connect.static('.tmp'),
               connect().use(
                 '/bower_components',
@@ -87,6 +87,30 @@ module.exports = function (grunt) {
           }
         }
       },
+
+      // serverside proxy, used to intercept calls for recording / mocking with E2E tests
+      // proxy: {
+      //   options: {
+      //     hostname: 'localhost',
+      //     port: 9002,
+      //     https: true,
+      //     middleware: function(connect, options, middlewares) {
+
+      //       // mock server prism library
+      //       middlewares.unshift(require('grunt-connect-prism/middleware'));
+
+      //       // sanity check
+      //       middlewares.unshift(function (req, res, next) {
+      //         console.log('proxy', req.url);
+
+      //         next();      
+      //       });
+
+      //       return middlewares;
+      //     }
+      //   }
+      // },
+
       test: {
         options: {
           port: 9001,
@@ -111,23 +135,24 @@ module.exports = function (grunt) {
       }
     },
 
-    // prism library so I can mock server requests / work offline
-    prism: {
-      options: {
-        mocksPath: './mocks',
-        host: 'api.instagram.com/',
-        port: 8080,
-        https: false,
-        context: '/',
-        changeOrigin: true
-      },
+    // // prism library so I can mock server requests / work offline
+    // prism: {
+    //   options: {
+    //     mocksPath: './mocks',
+    //     // host: 'api.instagram.com',
+    //     // https: true,
+    //     host: 'localhost',
+    //     port: 9001,
+    //     context: '/',
+    //     // changeOrigin: true
+    //   },
 
-      // modes
-      proxy:      { options: { mode: 'proxy' } },
-      record:     { options: { mode: 'record' } },
-      mock:       { options: { mode: 'mock' } },
-      mockrecord: { options: { mode: 'mockrecord' } }
-    },
+    //   // modes
+    //   proxy:      { options: { mode: 'proxy' } },
+    //   record:     { options: { mode: 'record' } },
+    //   mock:       { options: { mode: 'mock' } },
+    //   mockrecord: { options: { mode: 'mockrecord' } }
+    // },
 
     // Make sure code styles are up to par and there are no obvious mistakes
     jshint: {
@@ -382,7 +407,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'wiredep',
-      'prism:record',
+      // 'prism:record',
       'concurrent:server',
       'autoprefixer',
       'connect:livereload',
