@@ -2,10 +2,12 @@
 
 angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStore', '$location', '$q', function($rootScope, $http, $cookieStore, $location, $q) {
 
+  var accessTokenCookieKey = 'intsa-friend-mngr-token';
+
   var accessToken;
   var user;
 
-  accessToken = $cookieStore.get('accessToken');
+  accessToken = $cookieStore.get(accessTokenCookieKey);
 
   return {
     init: function() {
@@ -25,7 +27,7 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStor
             var hashExploded = hash.split('=');
             accessToken = hashExploded[1];
 
-            $cookieStore.put('accessToken', accessToken);
+            $cookieStore.put(accessTokenCookieKey, accessToken);
 
 
             $location.url('');
@@ -58,6 +60,12 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStor
 
     accessToken: function() {
       return accessToken;
+    },
+
+    logout: function() {      
+      accessToken = undefined;
+      $cookieStore.remove(accessTokenCookieKey);
+      window.location.href = 'http://localhost:9001/';
     }
   };
 

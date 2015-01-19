@@ -23,7 +23,7 @@
 
     <!-- Add your site or application content here -->
     <div class="container">
-      <div class="header padding-bottom-10">
+      <div class="header padding-bottom-10" ng-controller="HeaderCtrl">
         <nav>
           <a href="/followers">followers</a>
           <a href="/following">following</a>
@@ -31,6 +31,10 @@
           <a href="/fans">fans</a>
           <a href="/idols">idols</a>
         </nav>
+
+        <div ng-click="Auth.logout()" class="right pointer">
+          <a href="http://instagram.com/accounts/logout/" target="_black">logout</a>
+        </div>
       </div>
 
       <div ng-view=""></div>
@@ -85,6 +89,7 @@
 
     <script src="scripts/directives/wb_tab_select_directive.js"></script>
 
+    <script src="scripts/controllers/header_controller.js"></script>
     <script src="scripts/controllers/followers_controller.js"></script>
     <script src="scripts/controllers/following_controller.js"></script>
     <script src="scripts/controllers/friends_controller.js"></script>
