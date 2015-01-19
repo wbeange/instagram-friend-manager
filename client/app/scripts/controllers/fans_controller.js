@@ -1,11 +1,11 @@
 'use strict';
 
-angular.module('clientApp').controller('FansCtrl', function ($scope, UserModel, DifferenceModel) {
+angular.module('clientApp').controller('FansCtrl', function ($scope, UserModel, FanModel) {
 
   UserModel.get().then(function(data) {
     var userId = data.id;
 
-    DifferenceModel.fans(userId).then(function(fans) {
+    FanModel.all(userId).then(function(fans) {
       $scope.users = fans;
     });
   });
