@@ -32,15 +32,6 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth, M
       
       Model.prototype.all.call(this, userId, url).then(
         function(results) {
-
-          // lazy field placements
-          _.each(results, function(result) {
-            result.counts = {
-              media: '---',
-              followed_by: '---',
-              follows: '---'
-            }
-          });
           
           // intercept users and store locally
           users = results;

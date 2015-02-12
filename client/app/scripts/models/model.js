@@ -37,18 +37,28 @@ angular.module('clientApp').factory('Model', function($q, $http) {
 
     $http.jsonp(fullUrl).then(
       // success
-      function(results) {    
+      function(results) {
+        
+        // lazy field placements
+        _.each(results.data.data, function(result) {
+          result.counts = {
+            media: '---',
+            followed_by: '---',
+            follows: '---'
+          }
+        });
+
         // build return array
         self.users = self.users.concat(results.data.data);
 
-        // if(results.data.pagination.next_cursor) {
-        //   self.cursor = '&cursor=' + results.data.pagination.next_cursor;
+        if(results.data.pagination.next_cursor) {
+          self.cursor = '&cursor=' + results.data.pagination.next_cursor;
 
-        //   self._recursiveAll(deferred);
-        // } else {
+          self._recursiveAll(deferred);
+        } else {
           // double data.data because of jsonp return
           deferred.resolve(self.users);
-        // }
+        }
       },
 
       // error
