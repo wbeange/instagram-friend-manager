@@ -1,12 +1,14 @@
- angular.module('clientApp').directive('wbUser', function($compile) {
+'use strict';
+
+angular.module('clientApp').directive('wbUser', function($compile) {
   return {
-    restrict: "A",
+    restrict: 'A',
     replace: true,
     scope: {
-      user: "=wbUser"  
+      user: '=wbUser'  
     },
 
-    link: function(scope, element, attrs) {
+    link: function(scope, element) {
 
       // build list view
 
@@ -20,7 +22,6 @@
 
       element.html(html);
       $compile(element.contents())(scope);
-      
     }
   }
 });
