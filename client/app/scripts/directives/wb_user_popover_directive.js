@@ -46,7 +46,7 @@
       $( element )
 
         // manually trigger popover hide
-        // .on('mouseleave', setMouseoverEvent)
+        .on('mouseleave', setMouseoverEvent)
 
         // when you enter tile preview, show popover
         .on('mouseenter', function() {
@@ -64,7 +64,10 @@
           // manually trigger popover hide when leaving popover
           $('#'+elId)
             .on('mouseenter', cancelMouseoverEvent)
-            // .on('mouseleave', setMouseoverEvent);     
+            .on('mouseleave', setMouseoverEvent);
+
+          // call server for more profile info
+            
       });
 
       // TODO - using event handling to close all other popovers is bad
