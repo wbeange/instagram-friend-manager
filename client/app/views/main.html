@@ -22,13 +22,17 @@
         <img class="ui-corner-all img-rounded" ng-src="{{user.profile_picture}}" alt="..." style="width:100%;">
       </div>
     </div><div class="three-quarter-page top">
-      <div class="padding-left-3">{{user.full_name}}</div>
-      <div class="padding-left-3">
-        <a href="http://instagram.com/{{user.username}}" target="_blank">@{{user.username}}</a>
+      <div class="padding-left-3 line-height-small">
+        <span class="small">{{user.full_name}}</span>
+      </div>
+      <div class="padding-left-3 line-height-small">
+        <a href="http://instagram.com/{{user.username}}" target="_blank">
+          <span class="small">@{{user.username}}</span>
+        </a>
       </div>
     </div>
-    <div>Web: {{user.website}}</div>
-    <div>Bio: {{user.bio}}</div>
+    <div class="line-height-small"><span class="small">Web: {{user.website}}</span></div>
+    <div class="line-height-small"><span class="small">Bio: {{user.bio}}</span></div>
     
     <div class="third-page top center">
       photos

@@ -188,3 +188,5 @@ pulling all style conventions used on my past project */
 }
 
 .pointer { cursor: pointer !important; }
+
+.line-height-small { line-height: 1em; }
