@@ -41,14 +41,14 @@ angular.module('clientApp').factory('Model', function($q, $http) {
         // build return array
         self.users = self.users.concat(results.data.data);
 
-        if(results.data.pagination.next_cursor) {
-          self.cursor = '&cursor=' + results.data.pagination.next_cursor;
+        // if(results.data.pagination.next_cursor) {
+        //   self.cursor = '&cursor=' + results.data.pagination.next_cursor;
 
-          self._recursiveAll(deferred);
-        } else {
+        //   self._recursiveAll(deferred);
+        // } else {
           // double data.data because of jsonp return
           deferred.resolve(self.users);
-        }
+        // }
       },
 
       // error

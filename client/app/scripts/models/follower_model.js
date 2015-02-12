@@ -26,6 +26,7 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth, M
   FollowerModel.prototype.all = function(userId) {
     if(users === undefined) {
       var url = 'https://api.instagram.com/v1/users/' + userId + '/followed-by' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
+      // url += '&limit=5';
 
       var deferred = $q.defer();
       
