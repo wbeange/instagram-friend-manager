@@ -1,19 +1,16 @@
- angular.module('clientApp').directive('wbUserPopover', function($rootScope, $compile, $timeout, $interpolate, $templateCache) {
+ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $compile, $timeout, $interpolate, $templateCache, UserModel) {
   return {
     restrict: "A",
     replace: true,
     scope: {
-      user: "=wbUserPopover"  
+      user: "=wbUserPopover"
     },
 
     link: function(scope, element, attrs) {
       var elId = 'user_popover_' + scope.user.id;
 
-      // view in template
-      var html = $templateCache.get('user_popup_template');
-
-      // pop var w/ interpolate
-      html = $interpolate(html)({ elId: elId, user: scope.user });
+      // view in template, pop var w/ interpolate
+      html = $interpolate( $templateCache.get('user_popup_template') )({ elId: elId, user: scope.user });
 
       // initialize Javascript Bootstrap Popover library element
       $( element ).popover({
@@ -67,7 +64,16 @@
             .on('mouseleave', setMouseoverEvent);
 
           // call server for more profile info
+          if(UserModel.isLoading === false && scope.user.counts.media === '---') {
             
+            UserModel.get(scope.user.id).then(function(data) {
+              // reload popover with fresh data
+              scope.user = data;
+              var html = $interpolate( $templateCache.get('user_popup_template') )({ elId: elId, user: scope.user });
+              $('#'+elId).parent().html(html);
+              $compile( $('#'+elId).contents() )(scope);
+            });
+          }
       });
 
       // TODO - using event handling to close all other popovers is bad
