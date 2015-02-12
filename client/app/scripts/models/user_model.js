@@ -16,10 +16,10 @@ angular.module('clientApp').factory('UserModel', function($q, $http, Auth) {
 
   UserModel.prototype.get = function(userId) {
     if(userId === undefined) {
-      var url = "https://api.instagram.com/v1/users/self?access_token=" + Auth.accessToken() + "&callback=JSON_CALLBACK";
-    } else {
-      var url = "https://api.instagram.com/v1/users/" + userId + "?access_token=" + Auth.accessToken() + "&callback=JSON_CALLBACK";
+      userId = "self";
     }
+    
+    var url = "https://api.instagram.com/v1/users/" + userId + "?access_token=" + Auth.accessToken() + "&callback=JSON_CALLBACK";
 
     var deferred = $q.defer();
 

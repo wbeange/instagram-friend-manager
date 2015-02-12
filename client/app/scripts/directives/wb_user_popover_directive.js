@@ -9,13 +9,13 @@
     link: function(scope, element, attrs) {
       var elId = 'user_popover_' + scope.user.id;
 
-      // view in template, pop var w/ interpolate
-      html = $interpolate( $templateCache.get('user_popup_template') )({ elId: elId, user: scope.user });
+      // view in template
+      var html = $templateCache.get('user_popup_template');
 
       // initialize Javascript Bootstrap Popover library element
       $( element ).popover({
         html: true,
-        placement: 'bottom',
+        placement: 'auto',
         trigger: 'manual',
         content: html
       });
@@ -30,7 +30,7 @@
         mouseoverEvent = $timeout(function() {
           // manually hide popover
           $( element ).popover('hide');
-        }, 500);        
+        }, 750);        
       }
 
       var cancelMouseoverEvent = function () {
@@ -42,20 +42,16 @@
       
       $( element )
 
-        // manually trigger popover hide
-        .on('mouseleave', setMouseoverEvent)
-
         // when you enter tile preview, show popover
         .on('mouseenter', function() {
           $rootScope.$broadcast('close-all-popovers', scope.user.id);
 
-          $( element ).popover('show');
-
-          // compile html on hover for ng-src directive, etc...
-          $compile( $('#'+elId).contents() )(scope);
-
           // manually show popover
           cancelMouseoverEvent();
+          $( element ).popover('show');
+
+          // compile html on hover for ng-src directive, to enable user object 2-way binding
+          $compile( $( element ).next().contents() )(scope);
           
           // manually suppress popover hide when interacting with popover
           // manually trigger popover hide when leaving popover
@@ -63,18 +59,23 @@
             .on('mouseenter', cancelMouseoverEvent)
             .on('mouseleave', setMouseoverEvent);
 
+
           // call server for more profile info
-          if(UserModel.isLoading === false && scope.user.counts.media === '---') {
+          if(UserModel.isLoading === false && scope.user.counts.media === "---") {
             
             UserModel.get(scope.user.id).then(function(data) {
-              // reload popover with fresh data
-              scope.user = data;
-              var html = $interpolate( $templateCache.get('user_popup_template') )({ elId: elId, user: scope.user });
-              $('#'+elId).parent().html(html);
-              $compile( $('#'+elId).contents() )(scope);
+
+              // set each attr individually so reference isn't broken
+              scope.user.counts.media       = data.counts.media;
+              scope.user.counts.follows     = data.counts.follows;
+              scope.user.counts.followed_by = data.counts.followed_by;
             });
           }
-      });
+        })
+
+        // manually trigger popover hide
+        .on('mouseleave', setMouseoverEvent);
+
 
       // TODO - using event handling to close all other popovers is bad
       var closeAllPopovers = $rootScope.$on('close-all-popovers', function(event, userId) {
