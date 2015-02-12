@@ -58,6 +58,7 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
           if(UserModel.isLoading === false && scope.user.counts.media === "---") {
             
             UserModel.get(scope.user.id).then(function(data) {
+              // console.log('user', data);
 
               // set each attr individually so reference isn't broken
               scope.user.counts.media       = data.counts.media;
@@ -65,6 +66,17 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
               scope.user.counts.followed_by = data.counts.followed_by;
             });
           }
+
+          if(!_.has(scope.user, 'outgoing_status')) {
+            UserModel.relationship(scope.user.id).then(function(data) {
+              console.log('user relationship', data);
+
+              scope.user.outgoing_status = data.outgoing_status; // 'follows', 'none'
+              scope.user.target_user_is_private = data.target_user_is_private; // true, false
+              scope.user.incoming_status = data.incoming_status; // 'followed_by', 'none'
+            });
+          }
+
         })
 
         // manually trigger popover hide

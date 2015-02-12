@@ -52,8 +52,8 @@
 
     <div class="padding-top-5">
       <div class="half-page top center">
-        <button type="button" class="btn btn-sm btn-block btn-default" ng-click=""><i class="fa fa-plus"></i> Follow</button>
-        <button type="button" class="btn btn-sm btn-block btn-success" ng-click=""><i class="fa fa-check"></i> Following</button>
+        <button ng-show="user.outgoing_status === 'none'" type="button" class="btn btn-sm btn-block btn-default" ng-click=""><i class="fa fa-plus"></i> Follow</button>
+        <button ng-show="user.outgoing_status === 'follows'" type="button" class="btn btn-sm btn-block btn-success" ng-click=""><i class="fa fa-check"></i> Following</button>
       </div>
     </div>
   </div>
