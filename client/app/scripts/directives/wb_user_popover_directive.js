@@ -73,7 +73,9 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
 
               scope.user.outgoing_status = data.outgoing_status; // 'follows', 'none'
               scope.user.target_user_is_private = data.target_user_is_private; // true, false
-              scope.user.incoming_status = data.incoming_status; // 'followed_by', 'none'
+              scope.user.incoming_status = data.incoming_status; // 'followed_by', 'none', 'requested_by'
+
+              // TODO - if incoming_status === 'requested_by' display approve follower action
             });
           }
 

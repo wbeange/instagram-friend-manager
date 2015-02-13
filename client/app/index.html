@@ -24,24 +24,77 @@
 
     <!-- Add your site or application content here -->
     <div class="container">
-      <div class="header padding-bottom-10" ng-controller="HeaderCtrl">
-        <nav>
+      <a href="https://github.com/wbeange/instagram-friend-manager"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
+
+      <div class="padding-bottom-10" ng-controller="HeaderCtrl">
+        <!-- <nav>
           <a href="/followers">followers</a>
           <a href="/following">following</a>
           <a href="/friends">friends</a>
           <a href="/fans">fans</a>
           <a href="/idols">idols</a>
-        </nav>
+        </nav> -->
 
-        <div ng-click="Auth.logout()" class="right pointer">
-          <a href="http://instagram.com/accounts/logout/" target="_black">logout</a>
+        <div class="third-page top padding-bottom-20">
+          
+          <div class="inline-block top">
+            <div style="margin-left:auto;margin-right:auto;padding-top:3px;">
+              <img class="ui-corner-all img-rounded" ng-src="{{user.profile_picture}}" alt="..." style="width:50px;">
+            </div>
+          </div><div class="inline-block top">
+            <div class="padding-left-5 padding-top-3 line-height-small">
+              <span class="small">{{user.full_name}}</span>
+            </div>
+            <div class="padding-left-5 line-height-small">
+              <a href="http://instagram.com/{{user.username}}" target="_blank">
+                <span class="small">@{{user.username}}</span>
+              </a>
+            </div>
+            <div class="padding-left-5 line-height-small">
+              <span class="small">{{user.bio}}</span>
+            </div>
+          </div>
+
+          <div class="padding-top-5">
+            <div class="inline-block top padding-left-3 padding-right-10">
+              <div class="line-height-small"><span class="small bold">{{user.counts.media}}</span></div>
+              <div class="line-height-small"><span class="small">photos</span></div>
+            </div><div class="inline-block top padding-right-10">
+              <div class="line-height-small"><span class="small bold">{{user.counts.follows}}</span></div>
+              <div class="line-height-small"><span class="small">following</span></div>
+            </div><div class="inline-block top">
+              <div class="line-height-small"><span class="small bold">{{user.counts.followed_by}}</span></div>
+              <div class="line-height-small"><span class="small">followers</span></div>
+            </div>
+          </div>
+
+        </div><div class="third-page top center">
+          <div class="">
+            <h3 class="margin-top-10">Instagram Friend Manager</h3>
+          </div>
+        </div><div class="third-page top right">
+          <div ng-click="Auth.logout()" class="right pointer top">
+            <a href="http://instagram.com/accounts/logout/" target="_black">logout</a>
+          </div>
         </div>
+
+        <ul class="nav nav-tabs">
+          <li data-toggle="tab" role="presentation" class="active"><a href="/followers">Followers</a></li>
+          <li data-toggle="tab" role="presentation"><a href="/following">Following</a></li>
+          <li data-toggle="tab" role="presentation"><a href="/friends">Friends</a></li>
+          <li data-toggle="tab" role="presentation"><a href="/fans">Fans</a></li>
+          <li data-toggle="tab" role="presentation"><a href="/idols">Idols</a></li>
+        </ul>
       </div>
 
-      <div ng-view=""></div>
+      <div class="padding-bottom-10" ng-view=""></div>
 
       <div class="footer">
-        <p>instagram friend manager</p>
+        <div class="half-page top">
+          <p>wb 2015 - instagram friend manager</p>
+        </div><div class="half-page top right">
+          <!-- <a href="https://github.com/wbeange/instagram-friend-manager">github.com/wbeange/instagram-friend-manager</a> -->
+        </div>
       </div>
     </div>
 
@@ -88,7 +141,6 @@
 
     <script src="scripts/services/auth_service.js"></script>
 
-    <script src="scripts/directives/wb_tab_select_directive.js"></script>
     <script src="scripts/directives/wb_user_directive.js"></script>
     <script src="scripts/directives/wb_user_popover_directive.js"></script>
     <script src="scripts/directives/wb_popover_manual_hide_directive.js"></script>

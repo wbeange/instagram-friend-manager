@@ -35,6 +35,10 @@ angular.module('clientApp').factory('FollowingModel', function($q, $http, Auth, 
           // intercept users and store locally
           users = results;
 
+          // _.each(users, function(user) {
+          //   user.outgoing_status = '';
+          // });
+
           deferred.resolve(users);
         },
         function() {
