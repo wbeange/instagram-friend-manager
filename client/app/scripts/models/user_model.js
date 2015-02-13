@@ -48,7 +48,6 @@ angular.module('clientApp').factory('UserModel', function($q, $http, Auth) {
     this.isLoading = true;
     var self = this;
     $http.jsonp(url).then(function(results) {
-      self.isLoading = false;
 
       // double data.data because of jsonp return
       deferred.resolve(results.data.data);
