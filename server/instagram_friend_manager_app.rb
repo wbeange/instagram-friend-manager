@@ -1,21 +1,22 @@
 require "sinatra"
+require "sinatra/config_file"
 require "instagram"
 
-# config_file 'config.yml'
+config_file 'config.yml'
 
 enable :sessions
 
-CALLBACK_URL = "http://localhost:4567/oauth/callback"
+CALLBACK_URL = settings.callback_url
 
 Instagram.configure do |config|
-  config.client_id = "f1f2ed392b304f8f95ee9ffa345c5015"
-  config.client_secret = "51ccdc312efb401bade442161e401abc"
+  config.client_id = settings.client_id
+  config.client_secret = settings.client_secret
   # For secured endpoints only
   #config.client_ips = '<Comma separated list of IPs>'
 end
 
 get "/" do
-  '<a href="/oauth/connect">Connect with Instagram</a>'
+  redirect "/oauth/connect"
 end
 
 get "/oauth/connect" do
@@ -23,25 +24,16 @@ get "/oauth/connect" do
 end
 
 get "/oauth/callback" do
+  content_type :json
   response = Instagram.get_access_token(params[:code], :redirect_uri => CALLBACK_URL)
   session[:access_token] = response.access_token
-  redirect "/nav"
+  {:status => 200}.to_json
 end
 
-get "/user_recent_media" do
+get "/users/:user_id/follows" do
   content_type :json
-
   client = Instagram.client(:access_token => session[:access_token])
-  
-  client.user_recent_media.to_json
-end
-
-get "/users/:user_id/follows"
-  content_type :json
-
-  result = "hello world " + params[:user_id]
-
-  result.to_json
+  client.user_follows.to_json
 end
 
 get "/limits" do
