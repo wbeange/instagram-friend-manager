@@ -32,7 +32,7 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStor
 
             $cookieStore.put(accessTokenCookieKey, accessToken);
 
-
+            $rootScope.$broadcast('authenticated');
             $location.url('');
           
           // redirect to instagram website
