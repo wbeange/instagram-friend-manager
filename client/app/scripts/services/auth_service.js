@@ -7,6 +7,9 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStor
   var accessToken;
   var user;
 
+  var redirectUrl = 'http://localhost:9001/';
+  // var redirectUrl = 'https://insta-friend-manager.firebaseapp.com';
+
   accessToken = $cookieStore.get(accessTokenCookieKey);
 
   return {
@@ -47,8 +50,6 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStor
     },
 
     authenticate: function() {
-      var redirectUrl = 'http://localhost:9001/';
-
       var authorizationUrl = 'https://instagram.com/oauth/authorize/';
       authorizationUrl += '?client_id=0ed0e250ea854a129e9a849a8ee0ed9c';
       authorizationUrl += '&response_type=token';
@@ -65,7 +66,7 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStor
     logout: function() {      
       accessToken = undefined;
       $cookieStore.remove(accessTokenCookieKey);
-      window.location.href = 'http://localhost:9001/';
+      window.location.href = redirectUrl;
     }
   };
 
