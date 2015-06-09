@@ -1,3 +1,8 @@
+# TODO: to run:
+# gem install sinatra
+# gem install instagram
+# ruby instagra_friend_manager_app.rb
+
 require "sinatra"
 require "sinatra/config_file"
 require "instagram"
