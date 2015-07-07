@@ -1,8 +1,9 @@
 # TODO: to run:
-# gem install sinatra
-# gem install instagram
-# gem install instagram
-# ruby instagra_friend_manager_app.rb
+# gem install sinatra instagram rerun
+# ruby instagram_friend_manager_app.rb
+#
+# use rerun for reload on file changes:
+# $ rerun instagram_friend_manager_app.rb
 
 require "sinatra"
 require "sinatra/config_file"
@@ -36,6 +37,12 @@ get "/oauth/callback" do
   {:status => 200}.to_json
 end
 
+get "/users/self" do
+  content_type :json
+  client = Instagram.client(:access_token => session[:access_token])
+  client.user.to_json
+end
+
 get "/users/:user_id/follows" do
   content_type :json
   client = Instagram.client(:access_token => session[:access_token])
@@ -43,8 +50,11 @@ get "/users/:user_id/follows" do
 end
 
 get "/limits" do
-  content_type :json
+  # content_type :json
   client = Instagram.client(:access_token => session[:access_token])
   response = client.utils_raw_response
-  response.to_json
+
+  limit = response.headers[:x_ratelimit_limit]
+  # {:limit => limit}.to_json
+  limit
 end
