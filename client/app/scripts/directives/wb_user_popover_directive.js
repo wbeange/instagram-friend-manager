@@ -30,7 +30,7 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
         mouseoverEvent = $timeout(function() {
           // manually hide popover
           $( element ).popover('hide');
-        }, 500);        
+        }, 500);
       }
 
       var cancelMouseoverEvent = function () {
@@ -39,7 +39,7 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
           mouseoverEvent = undefined;
         }
       }
-      
+
       $( element )
 
         // when you enter tile preview, show popover
@@ -50,35 +50,35 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
           cancelMouseoverEvent();
           $( element ).popover('show');
 
-          // compile html on hover for ng-src directive, to enable user object 2-way binding 
+          // compile html on hover for ng-src directive, to enable user object 2-way binding
           $compile( $( element ).next().find('.popover-content').contents() )(scope);
 
 
           // call server for more profile info
           if(UserModel.isLoading === false && scope.user.counts.media === "---") {
-            
-            UserModel.get(scope.user.id).then(function(data) {
-              // console.log('user', data);
 
-              // set each attr individually so reference isn't broken
-              scope.user.counts.media       = data.counts.media;
-              scope.user.counts.follows     = data.counts.follows;
-              scope.user.counts.followed_by = data.counts.followed_by;
-            });
+            // UserModel.get(scope.user.id).then(function(data) {
+            //   // console.log('user', data);
+
+            //   // set each attr individually so reference isn't broken
+            //   scope.user.counts.media       = data.counts.media;
+            //   scope.user.counts.follows     = data.counts.follows;
+            //   scope.user.counts.followed_by = data.counts.followed_by;
+            // });
           }
 
           if(!_.has(scope.user, 'outgoing_status')) {
-            UserModel.relationship(scope.user.id)
+            // UserModel.relationship(scope.user.id)
 
-              .then(function(data) {
-                console.log('user relationship', data);
+            //   .then(function(data) {
+            //     console.log('user relationship', data);
 
-                scope.user.outgoing_status = data.outgoing_status; // 'follows', 'none'
-                scope.user.target_user_is_private = data.target_user_is_private; // true, false
-                scope.user.incoming_status = data.incoming_status; // 'followed_by', 'none', 'requested_by'
+            //     scope.user.outgoing_status = data.outgoing_status; // 'follows', 'none'
+            //     scope.user.target_user_is_private = data.target_user_is_private; // true, false
+            //     scope.user.incoming_status = data.incoming_status; // 'followed_by', 'none', 'requested_by'
 
-                // TODO - if incoming_status === 'requested_by' display approve follower action
-              })
+            //     // TODO - if incoming_status === 'requested_by' display approve follower action
+            //   })
           }
 
         })

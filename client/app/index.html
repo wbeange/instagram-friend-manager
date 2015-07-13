@@ -9,8 +9,9 @@
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
     <!-- build:css(.) styles/vendor.css -->
     <!-- bower:css -->
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
     <link rel="stylesheet" href="bower_components/fontawesome/css/font-awesome.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap-theme.css" />
     <!-- endbower -->
     <!-- endbuild -->
     <!-- build:css(.tmp) styles/main.css -->
@@ -27,16 +28,8 @@
       <a href="https://github.com/wbeange/instagram-friend-manager"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a>
 
       <div class="padding-bottom-10" ng-controller="HeaderCtrl">
-        <!-- <nav>
-          <a href="/followers">followers</a>
-          <a href="/following">following</a>
-          <a href="/friends">friends</a>
-          <a href="/fans">fans</a>
-          <a href="/idols">idols</a>
-        </nav> -->
-
         <div class="third-page top padding-bottom-20">
-          
+
           <div class="inline-block top">
             <div style="margin-left:auto;margin-right:auto;padding-top:3px;">
               <img class="ui-corner-all img-rounded" ng-src="{{user.profile_picture}}" alt="..." style="width:50px;">
@@ -85,6 +78,14 @@
           <li data-toggle="tab" role="presentation"><a href="/fans">Fans</a></li>
           <li data-toggle="tab" role="presentation"><a href="/idols">Idols</a></li>
         </ul>
+
+        <!-- <nav>
+          <a href="#/followers">followers</a>
+          <a href="#/following">following</a>
+          <a href="#/friends">friends</a>
+          <a href="#/fans">fans</a>
+          <a href="#/idols">idols</a>
+        </nav> -->
       </div>
 
       <div class="padding-bottom-10" ng-view=""></div>
@@ -130,7 +131,7 @@
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <script src="scripts/app.js"></script>
-    
+
     <script src="scripts/models/user_model.js"></script>
     <script src="scripts/models/model.js"></script>
     <script src="scripts/models/following_model.js"></script>
@@ -147,10 +148,10 @@
 
     <script src="scripts/controllers/header_controller.js"></script>
     <script src="scripts/controllers/followers_controller.js"></script>
-    <script src="scripts/controllers/following_controller.js"></script>
+    <!-- <script src="scripts/controllers/following_controller.js"></script>
     <script src="scripts/controllers/friends_controller.js"></script>
     <script src="scripts/controllers/fans_controller.js"></script>
-    <script src="scripts/controllers/idols_controller.js"></script>
+    <script src="scripts/controllers/idols_controller.js"></script> -->
     <!-- endbuild -->
 </body>
 </html>

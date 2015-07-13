@@ -7,7 +7,7 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStor
   var accessToken;
   var user;
 
-  var redirectUrl = 'http://localhost:9001/';
+  var redirectUrl = 'http://0.0.0.0:9001/';
   // var redirectUrl = 'https://insta-friend-manager.firebaseapp.com';
 
   accessToken = $cookieStore.get(accessTokenCookieKey);
@@ -17,53 +17,50 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookieStor
       var self = this;
 
       $rootScope.$on('$routeChangeStart', function(event, next, current) {
-        
+
         // check if we are signed in
         if(!self.isSignedIn()) {
 
-          // TODO: move this to a separate URL
-          // redirect case
-          if($location.hash() !== '') {
-            
-            // extract access token from hash
-            var hash = $location.hash();
-            var hashExploded = hash.split('=');
-            accessToken = hashExploded[1];
+          console.log('authenticated!');
 
-            $cookieStore.put(accessTokenCookieKey, accessToken);
+          // extract access token from hash
+          // var hash = $location.hash();
+          // var hashExploded = hash.split('=');
+          // accessToken = hashExploded[1];
 
-            $rootScope.$broadcast('authenticated');
-            $location.url('');
-          
-          // redirect to instagram website
-          } else {
-            self.authenticate();
-          }
+          // $cookieStore.put(accessTokenCookieKey, accessToken);
+
+          // $rootScope.$broadcast('authenticated');
+          // $location.url('');
+
+        } else {
+          // window.location.href = 'http://localhost:4567/oauth/connect';
         }
       });
     },
 
     isSignedIn: function() {
-      console.log('Auth.isSignedIn() - accessToken', accessToken);
-
-      return accessToken !== undefined;
+      return true;
     },
 
     authenticate: function() {
-      var authorizationUrl = 'https://instagram.com/oauth/authorize/';
-      authorizationUrl += '?client_id=0ed0e250ea854a129e9a849a8ee0ed9c';
-      authorizationUrl += '&response_type=token';
-      authorizationUrl += '&redirect_uri=' + redirectUrl;
-      authorizationUrl += '&scope=relationships';
+      // var authorizationUrl = 'https://instagram.com/oauth/authorize/';
+      // authorizationUrl += '?client_id=0ed0e250ea854a129e9a849a8ee0ed9c';
+      // authorizationUrl += '&response_type=token';
+      // authorizationUrl += '&redirect_uri=' + redirectUrl;
+      // authorizationUrl += '&scope=relationships';
+      // window.location.href = authorizationUrl;
 
-      window.location.href = authorizationUrl;
-    },    
+      console.log('redir');
+
+
+    },
 
     accessToken: function() {
       return accessToken;
     },
 
-    logout: function() {      
+    logout: function() {
       accessToken = undefined;
       $cookieStore.remove(accessTokenCookieKey);
       window.location.href = redirectUrl;

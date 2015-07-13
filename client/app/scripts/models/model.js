@@ -7,8 +7,6 @@ angular.module('clientApp').factory('Model', function($q, $http) {
   //
 
   function Model() {
-    this.url = '';
-    this.cursor = '';
     this.users = [];
   }
 
@@ -18,53 +16,18 @@ angular.module('clientApp').factory('Model', function($q, $http) {
 
   Model.prototype.all = function(userId, url) {
     this.url = url;
-    
+
     return this._recursiveAll();
   }
 
-  //
-  // private
-  //
+  Model.prototype.get = function() {
+    var self = this,
+      deferred = $q.defer(),
+      url = "http://localhost:4567/users/" + userId;
 
-  Model.prototype._recursiveAll = function(deferred) {
-    if(deferred === undefined) {
-      var deferred = $q.defer();
-    }
-    
-    var fullUrl = this.url + this.cursor;
-
-    var self = this;
-
-    $http.jsonp(fullUrl).then(
-      // success
-      function(results) {
-        
-        // lazy field placements
-        _.each(results.data.data, function(result) {
-          result.counts = {
-            media: '---',
-            followed_by: '---',
-            follows: '---'
-          }
-        });
-
-        // build return array
-        self.users = self.users.concat(results.data.data);
-
-        if(results.data.pagination.next_cursor) {
-          self.cursor = '&cursor=' + results.data.pagination.next_cursor;
-
-          self._recursiveAll(deferred);
-        } else {
-          // double data.data because of jsonp return
-          deferred.resolve(self.users);
-        }
-      },
-
-      // error
-      function() {
-        deferred.reject();
-      });
+    $http.get(url).then(function(results) {
+      deferred.resolve(results.data);
+    });
 
     return deferred.promise;
   }

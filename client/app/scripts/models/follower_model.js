@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth, Model) {
-  
+angular.module('clientApp').factory('FollowerModel', function($q, $http) {
+
   var users;
 
   //
@@ -9,47 +9,28 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Auth, M
   //
 
   function FollowerModel() {
-    Model.call(this, 'follower');
+
   }
-
-  //
-  // inheritence
-  //
-
-  FollowerModel.prototype = Object.create(Model.prototype);
-  FollowerModel.prototype.constructor = FollowerModel;
 
   //
   // public
   //
 
   FollowerModel.prototype.all = function(userId) {
-    if(users === undefined) {
-      var url = 'https://api.instagram.com/v1/users/' + userId + '/followed-by' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
-      // url += '&limit=5';
-
-      var deferred = $q.defer();
-      
-      Model.prototype.all.call(this, userId, url).then(
-        function(results) {
-          
-          // intercept users and store locally
-          users = results;
-
-          deferred.resolve(users);
-        },
-        function() {
-          deferred.reject();
-        });
-
-      return deferred.promise;
-    } else {
-      
-      var deferred = $q.defer();
-      deferred.resolve(users);
-      return deferred.promise;
+    if(userId === undefined) {
+      userId = 'self';
     }
-  }  
+
+    var self = this,
+      deferred = $q.defer(),
+      url = "http://localhost:4567/users/" + userId + '/follows';
+
+    $http.get(url).then(function(results) {
+      deferred.resolve(results.data);
+    });
+
+    return deferred.promise;
+  }
 
   return new FollowerModel();
 });

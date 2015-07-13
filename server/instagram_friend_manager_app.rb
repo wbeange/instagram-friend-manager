@@ -71,8 +71,7 @@ get "/users/self" do
 end
 
 get "/users/:user_id/follows" do
-  client =
-  json client.user_follows
+  json @client.user_follows
 end
 
 get "/limits" do
