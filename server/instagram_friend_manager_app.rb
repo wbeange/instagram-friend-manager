@@ -71,7 +71,18 @@ get "/users/:id" do
 end
 
 get "/users/:user_id/follows" do
-  json @client.user_follows
+  users = []
+
+  response = @client.user_follows()
+  users = users + response
+
+  while response.pagination && response.pagination.next_cursor && users.count < 1000
+    next_cursor = response.pagination.next_cursor
+    response = @client.user_follows({:cursor => next_cursor})
+    users = users + response
+  end
+
+  json users
 end
 
 get "/limits" do

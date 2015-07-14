@@ -30,10 +30,10 @@ angular.module('clientApp').factory('UserModel', function($q, $http) {
       deferred.resolve(users[userId]);
     } else {
       $http.get(url).then(function(results) {
+        users[userId] = results.data;
         deferred.resolve(results.data);
       });
     }
-
 
     return deferred.promise;
   }
