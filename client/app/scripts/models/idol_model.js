@@ -25,12 +25,12 @@ angular.module('clientApp').factory('IdolModel', function($q, $http, FollowingMo
 
   //
   // public
-  //  
+  //
 
   IdolModel.prototype.all = function(userId) {
     var urlCalls = [
-      FollowingModel.all(userId),
-      FollowerModel.all(userId)
+      FollowingModel.get(userId),
+      FollowerModel.get(userId)
     ];
 
     var deferred = $q.defer();
@@ -41,12 +41,12 @@ angular.module('clientApp').factory('IdolModel', function($q, $http, FollowingMo
       function(results) {
         var following = results[0];
         var followers = results[1];
-        
+
         var idols = self.findDifference(following, followers);
 
         deferred.resolve(idols);
       },
-      
+
       function() {
         deferred.reject();
       }

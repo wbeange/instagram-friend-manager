@@ -11,10 +11,11 @@ require "sinatra/json"
 require "instagram"
 require "json"
 
-enable :sessions
-
 # config file holds instagram app api settings
 config_file 'config.yml'
+
+# allows us to store instagram access token in a cookie
+enable :sessions
 
 # enable CORDS
 before do
@@ -27,7 +28,7 @@ end
 # ensure authenticated
 before do
 
-  # TODO: which need to be passed over?
+  # whitelist authentication routes
   pass if request.path_info == "/oauth/connect"
   pass if request.path_info == "/oauth/disconnect"
   pass if request.path_info == "/oauth/callback"
@@ -46,6 +47,14 @@ before do
   @client = Instagram.client(:access_token => session[:access_token])
 end
 
+#
+# controllers
+#
+
+#
+# authentication with instagram api
+#
+
 get "/" do
   redirect "/oauth/connect"
 end
@@ -55,9 +64,9 @@ get "/oauth/connect" do
 end
 
 # TODO: make this a DELETE request
-get "/oauth/disconnect" do
+post "/oauth/disconnect" do
   session[:access_token] = nil
-  status 200
+  redirect "/oauth/connect"
 end
 
 get "/oauth/callback" do
@@ -65,6 +74,16 @@ get "/oauth/callback" do
   session[:access_token] = response.access_token
   {:status => 200, :data => {:code => params[:code]}}.to_json
 end
+
+get "/limits" do
+  response = @client.utils_raw_response
+  limit = response.headers[:x_ratelimit_limit]
+  {:limit => limit}.to_json
+end
+
+#
+# instagram api proxies
+#
 
 get "/users/:id" do
   json @client.user("#{params[:id]}")
@@ -85,8 +104,17 @@ get "/users/:user_id/follows" do
   json users
 end
 
-get "/limits" do
-  response = @client.utils_raw_response
-  limit = response.headers[:x_ratelimit_limit]
-  {:limit => limit}.to_json
+get "/users/:user_id/followed_by" do
+  users = []
+
+  response = @client.user_follows()
+  users = users + response
+
+  while response.pagination && response.pagination.next_cursor && users.count < 1000
+    next_cursor = response.pagination.next_cursor
+    response = @client.user_followed_by({:cursor => next_cursor})
+    users = users + response
+  end
+
+  json users
 end

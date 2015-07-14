@@ -25,12 +25,12 @@ angular.module('clientApp').factory('FanModel', function($q, $http, FollowingMod
 
   //
   // public
-  //  
+  //
 
   FanModel.prototype.all = function(userId) {
     var urlCalls = [
-      FollowingModel.all(userId),
-      FollowerModel.all(userId)
+      FollowingModel.get(userId),
+      FollowerModel.get(userId)
     ];
 
     var deferred = $q.defer();
@@ -41,12 +41,12 @@ angular.module('clientApp').factory('FanModel', function($q, $http, FollowingMod
       function(results) {
         var following = results[0];
         var followers = results[1];
-        
+
         var fans = self.findDifference(followers, following);
 
         deferred.resolve(fans);
       },
-      
+
       function() {
         deferred.reject();
       }

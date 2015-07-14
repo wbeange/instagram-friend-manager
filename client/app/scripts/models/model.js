@@ -7,27 +7,28 @@ angular.module('clientApp').factory('Model', function($q, $http) {
   //
 
   function Model() {
-    this.users = [];
+
   }
 
   //
   // public
   //
 
-  Model.prototype.all = function(userId, url) {
-    this.url = url;
-
-    return this._recursiveAll();
-  }
-
-  Model.prototype.get = function() {
+  Model.prototype.get = function(url) {
     var self = this,
-      deferred = $q.defer(),
-      url = "http://localhost:4567/users/" + userId;
+      deferred = $q.defer();
 
-    $http.get(url).then(function(results) {
-      deferred.resolve(results.data);
-    });
+    $http.get(url).then(
+      // success
+      function(results) {
+        deferred.resolve(results.data);
+      },
+
+      // error
+      function(data) {
+        deferred.reject(data);
+      }
+    );
 
     return deferred.promise;
   }

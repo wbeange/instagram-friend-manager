@@ -25,12 +25,12 @@ angular.module('clientApp').factory('FriendModel', function($q, $http, Following
 
   //
   // public
-  //  
+  //
 
   FriendModel.prototype.all = function(userId) {
     var urlCalls = [
-      FollowingModel.all(userId),
-      FollowerModel.all(userId)
+      FollowingModel.get(userId),
+      FollowerModel.get(userId)
     ];
 
     var deferred = $q.defer();
@@ -41,12 +41,12 @@ angular.module('clientApp').factory('FriendModel', function($q, $http, Following
       function(results) {
         var following = results[0];
         var followers = results[1];
-        
+
         var friends = self.findFriends(following, followers);
 
         deferred.resolve(friends);
       },
-      
+
       function() {
         deferred.reject();
       }

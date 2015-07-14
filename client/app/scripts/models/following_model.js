@@ -1,7 +1,7 @@
 'use strict';
 
-angular.module('clientApp').factory('FollowingModel', function($q, $http, Auth, Model) {
-  
+angular.module('clientApp').factory('FollowingModel', function($q, $http, Model) {
+
   var users;
 
   //
@@ -9,7 +9,7 @@ angular.module('clientApp').factory('FollowingModel', function($q, $http, Auth, 
   //
 
   function FollowingModel() {
-    Model.call(this, 'following');
+    Model.call(this);
   }
 
   //
@@ -23,35 +23,25 @@ angular.module('clientApp').factory('FollowingModel', function($q, $http, Auth, 
   // public
   //
 
-  FollowingModel.prototype.all = function(userId) {
-    if(users === undefined) {
-      var url = 'https://api.instagram.com/v1/users/' + userId + '/follows' + '?access_token=' + Auth.accessToken() + '&callback=JSON_CALLBACK';
+  FollowingModel.prototype.get = function(userId) {
+    var self = this,
+      deferred = $q.defer(),
+      url = "http://localhost:4567/users/" + userId + '/follows';
 
-      var deferred = $q.defer();
-      
-      Model.prototype.all.call(this, userId, url).then(
-        function(results) {
-          
-          // intercept users and store locally
-          users = results;
-
-          // _.each(users, function(user) {
-          //   user.outgoing_status = '';
-          // });
-
-          deferred.resolve(users);
-        },
-        function() {
-          deferred.reject();
-        });
-
-      return deferred.promise;
-    } else {
-      
-      var deferred = $q.defer();
+    // suppress call if users stored locally after first load
+    if(users) {
       deferred.resolve(users);
-      return deferred.promise;
+    } else {
+      Model.prototype.get.call(this, url).then(function(data) {
+
+        // store locally so you only load once
+        users = data;
+
+        deferred.resolve(data);
+      });
     }
+
+    return deferred.promise;
   }
 
   return new FollowingModel();
