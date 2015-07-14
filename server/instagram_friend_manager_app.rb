@@ -60,7 +60,7 @@ get "/" do
 end
 
 get "/oauth/connect" do
-  redirect Instagram.authorize_url(:redirect_uri => settings.callback_url)
+  redirect Instagram.authorize_url(:redirect_uri => settings.callback_url, :scope => 'relationships')
 end
 
 # TODO: make this a DELETE request
@@ -76,9 +76,10 @@ get "/oauth/callback" do
 end
 
 get "/limits" do
-  response = @client.utils_raw_response
-  limit = response.headers[:x_ratelimit_limit]
-  {:limit => limit}.to_json
+  # response = @client.utils_raw_response
+  # limit = response.haders[:x_ratelimit_limit]
+  # {:limit => limit}.to_json
+  # json @client.utils_raw_response
 end
 
 #
@@ -89,7 +90,7 @@ get "/users/:id" do
   json @client.user("#{params[:id]}")
 end
 
-get "/users/:user_id/follows" do
+get "/users/:id/follows" do
   users = []
 
   response = @client.user_follows()
@@ -104,7 +105,7 @@ get "/users/:user_id/follows" do
   json users
 end
 
-get "/users/:user_id/followed_by" do
+get "/users/:id/followed_by" do
   users = []
 
   response = @client.user_follows()
@@ -117,4 +118,16 @@ get "/users/:user_id/followed_by" do
   end
 
   json users
+end
+
+get "/users/:id/relationship" do
+  json @client.user_relationship("#{params[:id]}")
+end
+
+post "/users/:id/follow" do
+  json @client.follow_user("#{params[:id]}")
+end
+
+post "/users/:id/unfollow" do
+  json @client.unfollow_user("#{params[:id]}")
 end

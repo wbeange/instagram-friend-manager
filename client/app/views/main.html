@@ -19,7 +19,7 @@
 </div>
 
 <script type="text/ng-template" id="user_popup_template">
-  <div class="popover-el" style="width:250px;">
+  <div id="{{popoverId}}" class="popover-el" style="width:250px;">
     <div class="quarter-page top">
       <div style="margin-left:auto;margin-right:auto;padding-top:3px;">
         <img class="ui-corner-all img-rounded" ng-src="{{user.profile_picture}}" alt="..." style="width:100%;">
@@ -54,11 +54,11 @@
     </div>
 
     <div class="padding-top-5">
-      <div class="half-page top center">
-        <button ng-show="user.outgoing_status === 'none'" type="button" class="btn btn-sm btn-block btn-default" ng-click="">
+      <div class="">
+        <button ng-show="relationship.outgoing_status === 'none'" type="button" class="btn btn-sm btn-default" ng-click="follow(user.id)">
           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span> Follow
         </button>
-        <button ng-show="user.outgoing_status === 'follows'" type="button" class="btn btn-sm btn-block btn-success" ng-click="">
+        <button ng-show="relationship.outgoing_status === 'follows'" type="button" class="btn btn-sm btn-success" ng-click="unfollow(user.id)">
           <span class="glyphicon glyphicon-ok" aria-hidden="true"></span> Following
         </button>
       </div>

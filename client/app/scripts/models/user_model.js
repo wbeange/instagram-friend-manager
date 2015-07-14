@@ -9,7 +9,7 @@ angular.module('clientApp').factory('UserModel', function($q, $http) {
   //
 
   function UserModel() {
-    this.isLoading = false;
+
   }
 
   //
@@ -38,27 +38,29 @@ angular.module('clientApp').factory('UserModel', function($q, $http) {
     return deferred.promise;
   }
 
-  // UserModel.prototype.relationship = function(userId) {
+  UserModel.prototype.follow = function(userId) {
+    var self = this,
+      deferred = $q.defer(),
+      url = "http://localhost:4567/users/" + userId + "/follow";
 
-  //   var url = "https://api.instagram.com/v1/users/" + userId + "/relationship?access_token=" + Auth.accessToken() + "&callback=JSON_CALLBACK";
+    $http.post(url).then(function(result) {
+      console.log('follow action return', result);
+    });
 
-  //   var deferred = $q.defer();
+    return deferred.promise;
+  }
 
-  //   this.isLoading = true;
-  //   var self = this;
-  //   $http.jsonp(url).then(function(results) {
+  UserModel.prototype.unfollow = function(userId) {
+    var self = this,
+      deferred = $q.defer(),
+      url = "http://localhost:4567/users/" + userId + "/unfollow";
 
-  //     // double data.data because of jsonp return
-  //     deferred.resolve(results.data.data);
-  //   },
+    $http.post(url).then(function(result) {
+      console.log('follow action return', result);
+    });
 
-  //   function(results) {
-  //     self.isLoading = false;
-  //     deferred.reject(results);
-  //   });
-
-  //   return deferred.promise;
-  // }
+    return deferred.promise;
+  }
 
   return new UserModel();
 });

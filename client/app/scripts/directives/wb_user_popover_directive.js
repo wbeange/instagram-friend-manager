@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('clientApp').directive('wbUserPopover', function($rootScope, $compile, $timeout, $interpolate, $templateCache, UserModel) {
+angular.module('clientApp').directive('wbUserPopover', function($rootScope, $compile, $timeout, $templateCache, UserModel, UserRelationshipModel) {
   return {
     restrict: 'A',
     scope: {
@@ -48,6 +48,14 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
         // $('#'+scope.userPopoverId).popover('hide');
         $( element ).next().hide();
       });
+
+      scope.follow = function(userId) {
+        UserModel.follow(userId);
+      }
+
+      scope.unfollow = function(userId) {
+        UserModel.unfollow(userId);
+      }
 
       //
       // init popover when user is loaded
@@ -101,11 +109,14 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
             UserModel.get(scope.user.id).then(function(data) {
               scope.user = data;
 
-              // keep popover open when hovered inside it
-              $('#'+scope.popoverId)
-                .mouseenter(function(){ cancelHideTimer(); })
-                .mouseleave(function(){ popoverManualHide(); });
+              UserRelationshipModel.get(scope.user.id).then(function(data) {
+                scope.relationship = data;
 
+                // keep popover open when hovered inside it
+                $('#'+scope.popoverId)
+                  .mouseenter(function(){ cancelHideTimer(); })
+                  .mouseleave(function(){ popoverManualHide(); });
+              });
             });
           })
 
