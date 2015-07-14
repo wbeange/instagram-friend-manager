@@ -3,113 +3,114 @@
 angular.module('clientApp').directive('wbUserPopover', function($rootScope, $compile, $timeout, $interpolate, $templateCache, UserModel) {
   return {
     restrict: 'A',
-    replace: true,
     scope: {
       user: '=wbUserPopover'
     },
 
     link: function(scope, element, attrs) {
-      // view in template
-      var html = $templateCache.get('user_popup_template');
 
-      // initialize Javascript Bootstrap Popover library element
-      $( element ).popover({
-        html: true,
-        placement: 'auto',
-        trigger: 'manual',
-        content: html
-      });
+      //
+      // link variables and functions
+      //
 
+      var popoverHideTimeout;
 
-      // manually handling popover on/off
-      var mouseoverEvent;
-
-      var setMouseleaveEvent = function() {
-        cancelMouseoverEvent();
-
-        mouseoverEvent = $timeout(function() {
-          // manually hide popover
-          $( element ).popover('hide');
-        }, 500);
-      }
-
-      var cancelMouseoverEvent = function () {
-        if(mouseoverEvent) {
-          $timeout.cancel(mouseoverEvent);
-          mouseoverEvent = undefined;
+      var cancelHideTimer = function() {
+        if(popoverHideTimeout) {
+          $timeout.cancel(popoverHideTimeout);
+          popoverHideTimeout = undefined;
         }
       }
 
-      $( element )
+      var popoverManualHide = function() {
+        cancelHideTimer();
 
-        // when you enter tile preview, show popover
-        .on('mouseenter', function() {
-          $rootScope.$emit('close-popovers', scope.user.id, true);
+        popoverHideTimeout = $timeout(function() {
+          // simply hide the popover element instead of removing it
+          // $('#'+scope.userPopoverId).popover('hide');
+          $( element ).next().hide();
+        }, 100);
+      }
 
-          // manually show popover
-          cancelMouseoverEvent();
-          $( element ).popover('show');
+      //
+      // view variables and functions
+      //
 
-          // compile html on hover for ng-src directive, to enable user object 2-way binding
-          $compile( $( element ).next().find('.popover-content').contents() )(scope);
+      // close popover if another is triggered
+      scope.$on('popover:init', function(event, id) {
+        // ignore if called from this id
+        if(scope.user === undefined || scope.user.id == id) return;
 
+        // cancel delayed hide
+        cancelHideTimer();
 
-          // call server for more profile info
-          if(UserModel.isLoading === false && scope.user.counts.media === "---") {
-
-            // UserModel.get(scope.user.id).then(function(data) {
-            //   // console.log('user', data);
-
-            //   // set each attr individually so reference isn't broken
-            //   scope.user.counts.media       = data.counts.media;
-            //   scope.user.counts.follows     = data.counts.follows;
-            //   scope.user.counts.followed_by = data.counts.followed_by;
-            // });
-          }
-
-          if(!_.has(scope.user, 'outgoing_status')) {
-            // UserModel.relationship(scope.user.id)
-
-            //   .then(function(data) {
-            //     console.log('user relationship', data);
-
-            //     scope.user.outgoing_status = data.outgoing_status; // 'follows', 'none'
-            //     scope.user.target_user_is_private = data.target_user_is_private; // true, false
-            //     scope.user.incoming_status = data.incoming_status; // 'followed_by', 'none', 'requested_by'
-
-            //     // TODO - if incoming_status === 'requested_by' display approve follower action
-            //   })
-          }
-
-        })
-
-        // manually trigger popover hide
-        .on('mouseleave', setMouseleaveEvent);
-
-
-      // TODO - using event handling is bad, refactor to communicate with service
-      var closePopoversEvent = $rootScope.$on('close-popovers', function(event, userId, closeAll) {
-        // when closeAll is true, hide all expect userId given
-        // when closeAll is undefined, only hide userId given
-        if( (closeAll !== undefined && scope.user.id !== userId) || (closeAll === undefined && scope.user.id === userId) ) {
-          cancelMouseoverEvent();
-          $( element ).popover('hide');
-        }
+        // simply hide the popover element instead of removing it
+        // $('#'+scope.userPopoverId).popover('hide');
+        $( element ).next().hide();
       });
 
-      var cancelMouseLeaveEvent = $rootScope.$on('cancel-mouse-leave', function(event, userId) {
-        if(scope.user.id === userId) {
-          cancelMouseoverEvent();
-        }
-      });
+      //
+      // init popover when user is loaded
+      //
 
-      // cleanup
-      scope.$on('$destroy', function() {
-        cancelMouseoverEvent();
-        closePopoversEvent();
-        cancelMouseLeaveEvent();
-        $( element ).unbind('mouseenter');
-        $( element ).unbind('mouseleave');
+      scope.$watch('::user', function() {
+
+        // wait for parent to load
+        if(scope.user === undefined) return;
+
+        // init view selectors
+        scope.userPopoverId = 'user_popover_' + scope.user.id;
+        scope.popoverId = 'popover_id_' + scope.user.id;
+
+        //
+        // initiate Javascript Bootstrap Popover Plugin
+        //
+
+        // parse HTML into DOM element
+        var template = angular.element( $templateCache.get('user_popup_template') );
+
+        // compile the template
+        var linkFn = $compile(template);
+
+        // link the compiled template with the scope
+        var popoverElement = linkFn(scope);
+
+        // attach popover to indicator
+        $('#'+scope.userPopoverId)
+
+          // init popover
+          .popover({
+            html: true,
+            placement: 'bottom',
+            trigger: 'manual',
+            content: popoverElement
+          })
+
+          // manual show and load content event
+          .mouseenter(function(){
+
+            // cancel delayed trigger popover hide
+            cancelHideTimer();
+
+            // event to hide all other popovers
+            $rootScope.$broadcast('popover:init', scope.user.id);
+
+            // manually trigger popover show (create popover element)
+            $('#'+scope.userPopoverId).popover('show');
+
+            UserModel.get(scope.user.id).then(function(data) {
+              scope.user = data;
+
+              // keep popover open when hovered inside it
+              $('#'+scope.popoverId)
+                .mouseenter(function(){ cancelHideTimer(); })
+                .mouseleave(function(){ popoverManualHide(); });
+
+            });
+          })
+
+          // manual hide
+          .mouseleave(function(){ popoverManualHide(); });
       });
     }
   }

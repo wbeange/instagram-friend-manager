@@ -2,6 +2,8 @@
 
 angular.module('clientApp').factory('UserModel', function($q, $http) {
 
+  var users = [];
+
   //
   // constructor
   //
@@ -23,9 +25,15 @@ angular.module('clientApp').factory('UserModel', function($q, $http) {
       deferred = $q.defer(),
       url = "http://localhost:4567/users/" + userId;
 
-    $http.get(url).then(function(results) {
-      deferred.resolve(results.data);
-    });
+    // store user locally so you only load once #yolo
+    if(_.has(users, userId) && users[userId]) {
+      deferred.resolve(users[userId]);
+    } else {
+      $http.get(url).then(function(results) {
+        deferred.resolve(results.data);
+      });
+    }
+
 
     return deferred.promise;
   }

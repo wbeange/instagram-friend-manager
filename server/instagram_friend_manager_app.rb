@@ -66,8 +66,8 @@ get "/oauth/callback" do
   {:status => 200, :data => {:code => params[:code]}}.to_json
 end
 
-get "/users/self" do
-  json @client.user
+get "/users/:id" do
+  json @client.user("#{params[:id]}")
 end
 
 get "/users/:user_id/follows" do
