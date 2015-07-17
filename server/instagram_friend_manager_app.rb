@@ -72,7 +72,8 @@ end
 get "/oauth/callback" do
   response = Instagram.get_access_token(params[:code], :redirect_uri => settings.callback_url)
   session[:access_token] = response.access_token
-  {:status => 200, :data => {:code => params[:code]}}.to_json
+  # {:status => 200, :data => {:code => params[:code]}}.to_json
+  redirect "http://localhost:9001/#/followers?code=#{params[:code]}"
 end
 
 get "/limits" do
