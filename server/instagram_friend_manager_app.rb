@@ -62,10 +62,8 @@ get "/oauth/connect" do
   redirect Instagram.authorize_url(:redirect_uri => settings.callback_url, :scope => 'relationships')
 end
 
-# TODO: make this a DELETE request?
 post "/oauth/disconnect" do
   session[:access_token] = nil
-  redirect "/oauth/connect"
 end
 
 get "/oauth/callback" do

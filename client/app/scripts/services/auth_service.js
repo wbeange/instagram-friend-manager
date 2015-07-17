@@ -46,7 +46,11 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
     },
 
     logout: function() {
+      // delete the server cookie
       $http.post('http://localhost:4567/oauth/disconnect');
+
+      // redirect to the client index
+      window.location.href = "http://localhost:9001/";
     }
   };
 
