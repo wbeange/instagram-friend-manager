@@ -27,14 +27,13 @@ end
 
 # ensure authenticated
 before do
-
   # whitelist authentication routes
   pass if request.path_info == "/oauth/connect"
   pass if request.path_info == "/oauth/disconnect"
   pass if request.path_info == "/oauth/callback"
 
-  # ensure logged in
-  redirect "/oauth/connect" unless session[:access_token]
+  # tell client to logged in
+  halt 401, 'please authenticate' if session[:access_token] == nil
 end
 
 before do
@@ -63,7 +62,7 @@ get "/oauth/connect" do
   redirect Instagram.authorize_url(:redirect_uri => settings.callback_url, :scope => 'relationships')
 end
 
-# TODO: make this a DELETE request
+# TODO: make this a DELETE request?
 post "/oauth/disconnect" do
   session[:access_token] = nil
   redirect "/oauth/connect"
@@ -72,7 +71,8 @@ end
 get "/oauth/callback" do
   response = Instagram.get_access_token(params[:code], :redirect_uri => settings.callback_url)
   session[:access_token] = response.access_token
-  # {:status => 200, :data => {:code => params[:code]}}.to_json
+
+  # redirect back to the client
   redirect "http://localhost:9001/#/followers?code=#{params[:code]}"
 end
 

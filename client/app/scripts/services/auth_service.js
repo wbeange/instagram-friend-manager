@@ -18,22 +18,31 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
 
           if(_.has(searchObject, 'code')) {
 
+            // store the session
             $cookies.put(authCookieKey, searchObject.code);
 
+            // If paramValue is null, the property specified via the first argument will be deleted.
             $location.search('code', null);
 
           } else {
 
-            window.location.href = "http://localhost:4567/oauth/connect";
-
+            self.signIn();
           }
         }
-
       });
     },
 
     isSignedIn: function() {
       return $cookies.get(authCookieKey) !== undefined;
+    },
+
+    signIn: function() {
+      // redirect to authenticate with Instagram
+      window.location.href = "http://localhost:4567/oauth/connect";
+    },
+
+    signOut: function() {
+      $cookies.put(authCookieKey, undefined);
     },
 
     logout: function() {

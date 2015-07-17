@@ -24,6 +24,8 @@ angular
     // $locationProvider.hashPrefix('#');
 
     $httpProvider.defaults.withCredentials = true;
+
+    $httpProvider.interceptors.push('HttpInterceptor');
   })
 
   .run(function($rootScope, Auth) {
