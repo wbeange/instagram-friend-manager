@@ -1,11 +1,12 @@
 # TODO: to run:
 # gem install sinatra instagram rerun
-# ruby instagram_friend_manager_app.rb
+# ruby app.rb
 #
-# use rerun for reload on file changes:
-# $ rerun instagram_friend_manager_app.rb
-
-# TODO: setup Gemfile
+# or use rerun for reload on file changes:
+# $ rerun app.rb
+#
+# or use bundle
+# $ bundle exec ruby app.rb
 
 require "sinatra"
 require "sinatra/config_file"
@@ -22,7 +23,7 @@ config_file 'config.yml'
 # enable CORDS
 before do
    headers['Access-Control-Allow-Methods'] = 'GET, POST, PUT, DELETE, OPTIONS'
-   headers['Access-Control-Allow-Origin'] = 'http://localhost:9001'
+   headers['Access-Control-Allow-Origin'] = settings.client_url
    headers['Access-Control-Allow-Headers'] = 'accept, authorization, origin'
    headers['Access-Control-Allow-Credentials'] = 'true'
 end
@@ -76,7 +77,7 @@ get "/oauth/callback" do
   session[:access_token] = response.access_token
 
   # redirect back to the client
-  redirect "http://localhost:9001/#/followers?code=#{params[:code]}"
+  redirect settings.client_url + "/#/followers?code=#{params[:code]}"
 end
 
 get "/limits" do
