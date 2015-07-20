@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('clientApp').factory('UserModel', function($q, $http) {
+angular.module('clientApp').factory('UserModel', function($q, $http, $window) {
 
   var users = [];
 
@@ -38,28 +38,48 @@ angular.module('clientApp').factory('UserModel', function($q, $http) {
     return deferred.promise;
   }
 
+  //
+  // http://developers.instagram.com/post/116410697261/publishing-guidelines-and-signed-requests
+  // Starting today, any newly created client_id that wishes to issue POST and DELETE requests
+  // to the Likes or Relationships API endpoints will first have to request that access.
+  // This will follow the same process that we introduced for posting comments last year.
+  // Examples of use-cases that will be considered for access include:
+  //
+
+  //
+  // TODO: I can't implement POST or DELETE at this time
+  //
+
   UserModel.prototype.follow = function(userId) {
-    var self = this,
-      deferred = $q.defer(),
-      url = "http://localhost:4567/users/" + userId + "/follow";
+    // var self = this,
+    //   deferred = $q.defer(),
+    //   url = "http://localhost:4567/users/follow";
 
-    $http.post(url).then(function(result) {
-      console.log('follow action return', result);
-    });
+    // $http.post(url, {id: userId}).then(function(result) {
+    //   console.log('follow action return', result);
+    //   deferred.resolve(result);
+    // });
 
-    return deferred.promise;
+    // return deferred.promise;
+
+    var url = "http://instagram.com/" + users[userId].username;
+    $window.open(url, '_blank');
   }
 
   UserModel.prototype.unfollow = function(userId) {
-    var self = this,
-      deferred = $q.defer(),
-      url = "http://localhost:4567/users/" + userId + "/unfollow";
+    // var self = this,
+    //   deferred = $q.defer(),
+    //   url = "http://localhost:4567/users/unfollow";
 
-    $http.post(url).then(function(result) {
-      console.log('follow action return', result);
-    });
+    // $http.delete(url, {id: userId}).then(function(result) {
+    //   console.log('unfollow action return', result);
+    //   deferred.resolve(result);
+    // });
 
-    return deferred.promise;
+    // return deferred.promise;
+
+    var url = "http://instagram.com/" + users[userId].username;
+    $window.open(url, '_blank');
   }
 
   return new UserModel();

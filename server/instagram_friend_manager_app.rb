@@ -11,11 +11,11 @@ require "sinatra/json"
 require "instagram"
 require "json"
 
-# config file holds instagram app api settings
-config_file 'config.yml'
-
 # allows us to store instagram access token in a cookie
 enable :sessions
+
+# config file holds instagram app api settings
+config_file 'config.yml'
 
 # enable CORDS
 before do
@@ -41,6 +41,9 @@ before do
   Instagram.configure do |config|
     config.client_id = settings.client_id
     config.client_secret = settings.client_secret
+    config.scope = 'relationships'
+    config.redirect_uri = settings.callback_url
+    # config.sign_requests = true
   end
 
   @client = Instagram.client(:access_token => session[:access_token])
@@ -59,7 +62,7 @@ get "/" do
 end
 
 get "/oauth/connect" do
-  redirect Instagram.authorize_url(:redirect_uri => settings.callback_url, :scope => 'relationships')
+  redirect Instagram.authorize_url
 end
 
 post "/oauth/disconnect" do
@@ -67,7 +70,7 @@ post "/oauth/disconnect" do
 end
 
 get "/oauth/callback" do
-  response = Instagram.get_access_token(params[:code], :redirect_uri => settings.callback_url)
+  response = Instagram.get_access_token(params[:code])
   session[:access_token] = response.access_token
 
   # redirect back to the client
@@ -123,10 +126,10 @@ get "/users/:id/relationship" do
   json @client.user_relationship("#{params[:id]}")
 end
 
-post "/users/:id/follow" do
-  json @client.follow_user("#{params[:id]}")
-end
+# post "/users/follow" do
+#   # @client.follow_user("#{params[:id]}")
+# end
 
-post "/users/:id/unfollow" do
-  json @client.unfollow_user("#{params[:id]}")
-end
+# delete "/users/unfollow" do
+#   @client.unfollow_user("#{params[:id]}")
+# end
