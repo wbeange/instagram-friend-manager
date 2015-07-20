@@ -1,2 +1,3 @@
 legacy/
 server/config.yml
+server/node_modules
