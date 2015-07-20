@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', '$location', function($rootScope, $http, $cookies, $location) {
+angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', '$location', 'Configuration', function($rootScope, $http, $cookies, $location, Configuration) {
 
   var authCookieKey = 'insta-friend-mngr';
 
@@ -26,7 +26,8 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
 
           } else {
 
-            self.signIn();
+            // redirect to authenticate with Instagram
+            window.location.href = Configuration.base_api_url + "/oauth/connect";
           }
         }
       });
@@ -36,21 +37,16 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
       return $cookies.get(authCookieKey) !== undefined;
     },
 
-    signIn: function() {
-      // redirect to authenticate with Instagram
-      window.location.href = "http://localhost:4567/oauth/connect";
-    },
-
     signOut: function() {
       $cookies.put(authCookieKey, undefined);
     },
 
     logout: function() {
       // delete the server cookie
-      $http.post('http://localhost:4567/oauth/disconnect');
+      $http.post(Configuration.base_api_url + '/oauth/disconnect');
 
       // redirect to the client index
-      window.location.href = "http://localhost:9001/";
+      window.location.href = Configuration.base_client_url + "/";
     }
   };
 

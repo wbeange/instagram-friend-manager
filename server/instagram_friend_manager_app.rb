@@ -5,6 +5,8 @@
 # use rerun for reload on file changes:
 # $ rerun instagram_friend_manager_app.rb
 
+# TODO: setup Gemfile
+
 require "sinatra"
 require "sinatra/config_file"
 require "sinatra/json"

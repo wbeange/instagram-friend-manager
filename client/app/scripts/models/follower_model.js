@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('clientApp').factory('FollowerModel', function($q, $http, Model) {
+angular.module('clientApp').factory('FollowerModel', function($q, $http, Model, Configuration) {
 
   var users;
 
@@ -26,7 +26,7 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Model) 
   FollowerModel.prototype.get = function(userId) {
     var self = this,
       deferred = $q.defer(),
-      url = "http://localhost:4567/users/" + userId + '/followed_by';
+      url = Configuration.base_api_url + "/users/" + userId + '/followed_by';
 
     // suppress call if users stored locally after first load
     if(users) {

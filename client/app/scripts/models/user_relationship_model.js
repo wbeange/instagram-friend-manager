@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('clientApp').factory('UserRelationshipModel', function($q, $http) {
+angular.module('clientApp').factory('UserRelationshipModel', function($q, $http, Configuration) {
 
   var relationship = [];
 
@@ -23,7 +23,7 @@ angular.module('clientApp').factory('UserRelationshipModel', function($q, $http)
 
     var self = this,
       deferred = $q.defer(),
-      url = "http://localhost:4567/users/" + userId + "/relationship";
+      url = Configuration.base_api_url + "/users/" + userId + "/relationship";
 
     if(_.has(relationship, userId) && relationship[userId]) {
       deferred.resolve(relationship[userId]);
