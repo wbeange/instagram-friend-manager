@@ -3,7 +3,17 @@
 angular.module('clientApp').controller('HeaderCtrl', function ($scope, Auth, UserModel) {
   $scope.Auth = Auth;
 
-  UserModel.get().then(function(data) {
-    $scope.user = data;
+  var loadUser = function() {
+    UserModel.get().then(function(data) {
+      $scope.user = data;
+    });
+  };
+
+  if($scope.Auth.isSignedIn()) {
+    loadUser();
+  }
+
+  $scope.$on('logged-in', function() {
+    loadUser();
   });
 });

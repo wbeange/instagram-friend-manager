@@ -14,20 +14,20 @@ angular
       .when('/friends',     { controller: 'FriendsCtrl',    templateUrl: 'views/main.html', reloadOnSearch: false })
       .when('/fans',        { controller: 'FansCtrl',       templateUrl: 'views/main.html', reloadOnSearch: false })
       .when('/idols',       { controller: 'IdolsCtrl',      templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/login',       { controller: 'LoginCtrl',      templateUrl: 'views/login.html', reloadOnSearch: false })
 
-      .otherwise({ redirectTo: '/following', reloadOnSearch: false });
+      .otherwise({ redirectTo: '/login', reloadOnSearch: false });
   })
 
-  // enable html5Mode for pushstate ('#'-less URLs)
   .config(function($locationProvider, $httpProvider) {
-    // $locationProvider.html5Mode(true);
-    // $locationProvider.hashPrefix('#');
-
+    // CORS requests with credentials
     $httpProvider.defaults.withCredentials = true;
 
+    // HttpInterceptor to handle 401s
     $httpProvider.interceptors.push('HttpInterceptor');
   })
 
   .run(function($rootScope, Auth) {
+    // initiate authentication handler
     Auth.init();
   });

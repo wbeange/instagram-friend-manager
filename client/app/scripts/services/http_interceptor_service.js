@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('clientApp').factory('HttpInterceptor', ['$q', '$injector', function($q, $injector) {
+angular.module('clientApp').factory('HttpInterceptor', ['$q', '$injector', function($q, $injector, $location) {
 
   return {
     responseError: function(rejection) {
@@ -12,8 +12,8 @@ angular.module('clientApp').factory('HttpInterceptor', ['$q', '$injector', funct
         // remove stale client cookie
         auth.signOut();
 
-        // redirect to authenticate with Instagram
-        window.location.href = config.base_api_url + "/oauth/connect";
+        // redirect to the client login page
+        $location.url('/login');
       }
 
       return $q.reject(rejection);

@@ -24,10 +24,15 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
             // If paramValue is null, the property specified via the first argument will be deleted.
             $location.search('code', null);
 
+            $rootScope.$broadcast('logged-in');
+
+            // redirect to page once logged in
+            $location.url('/followers');
+
           } else {
 
-            // redirect to authenticate with Instagram
-            window.location.href = Configuration.base_api_url + "/oauth/connect";
+            // redirect to the client login page
+            $location.url('/login');
           }
         }
       });
@@ -37,6 +42,13 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
       return $cookies.get(authCookieKey) !== undefined;
     },
 
+    signIn: function() {
+      // redirect to authenticate with Instagram
+      window.location.href = Configuration.base_api_url + "/oauth/connect";
+    },
+
+    // TODO: better naming for these methods...
+
     signOut: function() {
       $cookies.put(authCookieKey, undefined);
     },
@@ -45,8 +57,11 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
       // delete the server cookie
       $http.post(Configuration.base_api_url + '/oauth/disconnect');
 
-      // redirect to the client index
-      window.location.href = Configuration.base_client_url + "/";
+      // delete the client cookie
+      this.signOut();
+
+      // redirect to the client login page
+      $location.url('/login');
     }
   };
 
