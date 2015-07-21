@@ -1,8 +1,10 @@
 # instagram-friend-manager
-see your friends, fans, and idols on instagram
+See people you follow that follow you back!
+See people you don't follow that follow you.
+See people you follow that don't follow you back.
 
-Installing Local Development Environment
+# technologies used
+Back End: Ruby Sinatra hosted on Heroku.
+Front End: AngularJS (using Yeoman) hosted on Firebase.
 
-Back End (Ruby Sinatra)
-
-Front End (AngularJS w/ Yeoman)
+Just to say I did it.
