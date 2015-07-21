@@ -13,7 +13,9 @@ angular.module('clientApp').controller('HeaderCtrl', function ($scope, Auth, Use
     loadUser();
   }
 
-  $scope.$on('logged-in', function() {
-    loadUser();
+  $scope.$on('wb-authenticated', function(event, isLoggedIn) {
+    if(isLoggedIn) {
+      loadUser();
+    }
   });
 });

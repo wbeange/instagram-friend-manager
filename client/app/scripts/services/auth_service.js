@@ -24,7 +24,7 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
             // If paramValue is null, the property specified via the first argument will be deleted.
             $location.search('code', null);
 
-            $rootScope.$broadcast('logged-in');
+            $rootScope.$broadcast('wb-authenticated', true);
 
             // redirect to page once logged in
             $location.url('/followers');
@@ -59,6 +59,9 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
 
       // delete the client cookie
       this.signOut();
+
+      // pub auth state
+      $rootScope.$broadcast('wb-authenticated', false);
 
       // redirect to the client login page
       $location.url('/login');
