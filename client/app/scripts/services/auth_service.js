@@ -10,8 +10,16 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
 
       $rootScope.$on('$routeChangeStart', function(event, next, current) {
 
-        // check if we are authenticated
-        if(!self.isSignedIn()) {
+        // authenticated
+        if(self.isSignedIn()) {
+
+          // redirect if headed to login page
+          if($location.path() == '/login') {
+            $location.url('/followers');
+          }
+
+        // not authenticated
+        } else {
 
           // check if this is the callback after authenticating
           var searchObject = $location.search();
@@ -26,7 +34,7 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
 
             $rootScope.$broadcast('wb-authenticated', true);
 
-            // redirect to page once logged in
+            // redirect once logged in
             $location.url('/followers');
 
           } else {
