@@ -71,14 +71,13 @@
             </div>
           </div>
 
-          <!-- TODO: Better navbar functionality -->
           <div class="padding-top-20">
             <ul class="nav nav-tabs">
-              <li data-toggle="tab" role="presentation" class="active"><a href="#/followers">Followers</a></li>
-              <li data-toggle="tab" role="presentation"><a href="#/following">Following</a></li>
-              <li data-toggle="tab" role="presentation"><a href="#/friends">Friends</a></li>
-              <li data-toggle="tab" role="presentation"><a href="#/fans">Fans</a></li>
-              <li data-toggle="tab" role="presentation"><a href="#/idols">Idols</a></li>
+              <li wb-navigation-tabs="/followers"><a href="#/followers">Followers</a></li>
+              <li wb-navigation-tabs="/following"><a href="#/following">Following</a></li>
+              <li wb-navigation-tabs="/friends"><a href="#/friends">Friends</a></li>
+              <li wb-navigation-tabs="/fans"><a href="#/fans">Fans</a></li>
+              <li wb-navigation-tabs="/idols"><a href="#/idols">Idols</a></li>
             </ul>
           </div>
         </div>
@@ -145,6 +144,7 @@
 
     <script src="scripts/directives/wb_user_popover_directive.js"></script>
     <script src="scripts/directives/wb_show_authed_directive.js"></script>
+    <script src="scripts/directives/wb_navigation_tabs.js"></script>
 
     <script src="scripts/controllers/header_controller.js"></script>
     <script src="scripts/controllers/followers_controller.js"></script>

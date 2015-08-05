@@ -16,13 +16,13 @@
     "angular-scenario": "^1.4.2"
   },
   "appPath": "app",
-  "overrides":{
-     "bootstrap" : {
-          "main": [
-             "less/bootstrap.less",
-             "dist/css/bootstrap.css",
-             "dist/js/bootstrap.js"
-           ]
-     }
-   }
+  "overrides": {
+    "bootstrap": {
+      "main": [
+        "less/bootstrap.less",
+        "dist/css/bootstrap.css",
+        "dist/js/bootstrap.js"
+      ]
+    }
+  }
 }
