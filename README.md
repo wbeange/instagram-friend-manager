@@ -1,12 +1,13 @@
 https://insta-friend-manager.firebaseapp.com
 
 # instagram-friend-manager
-See people you follow that follow you back!
-See people you don't follow that follow you.
-See people you follow that don't follow you back.
+<div>See people you follow that follow you back!</div>
+<div>See people you don't follow that follow you.</div>
+<div>See people you follow that don't follow you back.</div>
 
 # technologies used
-Back End: Ruby Sinatra hosted on Heroku.
-Front End: AngularJS (using Yeoman) hosted on Firebase.
+<div>Back End: Ruby Sinatra hosted on Heroku.</div>
+<div>Front End: AngularJS (using Yeoman) hosted on Firebase.</div>
 
-Just to say I did it.
+# why?
+<div>Just to say I did it.</div>
