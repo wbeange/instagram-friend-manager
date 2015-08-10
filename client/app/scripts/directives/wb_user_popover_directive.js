@@ -14,6 +14,7 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
       //
 
       var popoverHideTimeout;
+      var popoverInitialized = false;
 
       var cancelHideTimer = function() {
         if(popoverHideTimeout) {
@@ -30,6 +31,31 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
           // $('#'+scope.userPopoverId).popover('hide');
           $( element ).next().hide();
         }, 100);
+      }
+
+      var loadPopoverContent = function() {
+
+        // cancel delayed trigger popover hide
+        cancelHideTimer();
+
+        // event to hide all other popovers
+        $rootScope.$broadcast('popover:init', scope.user.id);
+
+        // manually trigger popover show (create popover element)
+        $('#'+scope.userPopoverId).popover('show');
+
+        UserModel.get(scope.user.id).then(function(data) {
+          scope.user = data;
+
+          UserRelationshipModel.get(scope.user.id).then(function(data) {
+            scope.relationship = data;
+
+            // keep popover open when hovered inside it
+            $('#'+scope.popoverId)
+              .mouseenter(function(){ cancelHideTimer(); })
+              .mouseleave(function(){ popoverManualHide(); });
+          });
+        });
       }
 
       //
@@ -61,7 +87,10 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
       // init popover when user is loaded
       //
 
-      scope.$watch('::user', function() {
+      $(element).mouseenter(function() {
+
+        if(popoverInitialized) return;
+        popoverInitialized = true;
 
         // wait for parent to load
         if(scope.user === undefined) return;
@@ -94,34 +123,15 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
             content: popoverElement
           })
 
-          // manual show and load content event
-          .mouseenter(function(){
+          // show and load content event on mouse enter
+          .mouseenter(function(){ loadPopoverContent(); })
 
-            // cancel delayed trigger popover hide
-            cancelHideTimer();
-
-            // event to hide all other popovers
-            $rootScope.$broadcast('popover:init', scope.user.id);
-
-            // manually trigger popover show (create popover element)
-            $('#'+scope.userPopoverId).popover('show');
-
-            UserModel.get(scope.user.id).then(function(data) {
-              scope.user = data;
-
-              UserRelationshipModel.get(scope.user.id).then(function(data) {
-                scope.relationship = data;
-
-                // keep popover open when hovered inside it
-                $('#'+scope.popoverId)
-                  .mouseenter(function(){ cancelHideTimer(); })
-                  .mouseleave(function(){ popoverManualHide(); });
-              });
-            });
-          })
-
-          // manual hide
+          // hide on mouse leave
           .mouseleave(function(){ popoverManualHide(); });
+
+        // manually show the first time
+        loadPopoverContent();
+
       });
     }
   }
