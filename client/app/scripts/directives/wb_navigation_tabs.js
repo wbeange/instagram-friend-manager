@@ -12,13 +12,18 @@ angular.module('clientApp')
       restrict: 'A',
       link: function postLink(scope, element, attrs) {
 
+        // select all tabs
+        var items = element.find('li');
+
         // add / remove twitter bootstrap styling as needed
         var toggleSelected = function() {
-          if(attrs.wbNavigationTabs == $location.path()) {
-            element.addClass('active');
-          } else {
-            element.removeClass('active');
-          }
+          _.each(items, function(item) {
+            if(item.attributes['nav-tab'].value == $location.path()) {
+              $(item).addClass('active');
+            } else {
+              $(item).removeClass('active');
+            }
+          });
         }
 
         // initial load
