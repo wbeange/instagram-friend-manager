@@ -18,7 +18,12 @@ angular.module('clientApp')
         // add / remove twitter bootstrap styling as needed
         var toggleSelected = function() {
           _.each(items, function(item) {
-            if(item.attributes['nav-tab'].value == $location.path()) {
+
+            var anchor = angular.element(item).children();
+            var href = anchor.attr('href');
+            var location = '#' + $location.path();
+
+            if(href === location) {
               $(item).addClass('active');
             } else {
               $(item).removeClass('active');
