@@ -43,7 +43,10 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
 
           $rootScope.$broadcast('wb-authenticated', true);
 
-          $location.url('/followers');
+          // redirect if headed to login page
+          if($location.path() == '/login') {
+            $location.url('/followers');
+          }
 
           deferred.resolve(data);
         },

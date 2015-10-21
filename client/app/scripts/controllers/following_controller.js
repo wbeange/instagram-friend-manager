@@ -1,15 +1,11 @@
 'use strict';
 
-angular.module('clientApp').controller('FollowingCtrl', function ($scope, UserModel, FollowingModel) {
+angular.module('clientApp').controller('FollowingCtrl', function ($scope, Auth, FollowingModel) {
   $scope.subHeader = 'People you follow.';
 
   $scope.isLoading = true;
-  UserModel.get().then(function(data) {
-    var userId = data.id;
-
-    FollowingModel.get(userId).then(function(users) {
-      $scope.users = users;
-      $scope.isLoading = false;
-    });
+  FollowingModel.get(Auth.userId()).then(function(users) {
+    $scope.users = users;
+    $scope.isLoading = false;
   });
 });
