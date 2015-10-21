@@ -39,7 +39,7 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
           // console.log('active server session', data);
 
           // store client session
-          $cookies.put(authCookieKey, data);
+          $cookies.put(authCookieKey, data.id);
 
           $rootScope.$broadcast('wb-authenticated', true);
 
@@ -64,11 +64,7 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
     },
 
     userId: function() {
-      var user = $cookies.get(authCookieKey);
-
-      if(user) {
-        return user.id;
-      }
+      return $cookies.get(authCookieKey);
     },
 
     signIn: function() {
