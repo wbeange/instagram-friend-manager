@@ -6,6 +6,7 @@ https://insta-friend-manager.firebaseapp.com
 <div>See people you follow that don't follow you back.</div>
 
 # technologies used
+<div>A RESTful API written in Ruby and Sinatra that communicates with an AngularJS based web app.</div>
 <div>Back End: Ruby Sinatra hosted on Heroku.</div>
 <div>Front End: AngularJS (using Yeoman) hosted on Firebase.</div>
 

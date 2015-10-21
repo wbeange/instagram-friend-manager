@@ -3,6 +3,6 @@ ruby "2.0.0"
 
 gem 'sinatra'
 gem 'sinatra-config-file'
-# gem 'sinatra/json'
 gem 'instagram'
 gem 'json'
+gem 'rerun'

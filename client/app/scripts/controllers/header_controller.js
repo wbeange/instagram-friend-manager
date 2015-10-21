@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('clientApp').controller('HeaderCtrl', function ($scope, Auth, UserModel) {
+angular.module('clientApp').controller('HeaderCtrl', function ($scope, $http, Configuration, Auth, UserModel) {
   $scope.Auth = Auth;
 
   var loadUser = function() {

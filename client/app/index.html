@@ -24,12 +24,8 @@
 
     <!-- Add your site or application content here -->
     <div class="container">
-
-      <!-- GitHub Ribbon -->
-      <!-- <a href="https://github.com/wbeange/instagram-friend-manager"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/a6677b08c955af8400f44c6298f40e7d19cc5b2d/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f677261795f3664366436642e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png"></a> -->
-
       <div ng-controller="HeaderCtrl">
-        <div ng-if="Auth.isSignedIn()">
+        <div class="hidden" wb-show-authed>
           <div class="third-page top">
             <div class="inline-block top">
               <div style="margin-left:auto;margin-right:auto;padding-top:3px;">
@@ -78,6 +74,7 @@
               <li><a href="#/friends">Friends</a></li>
               <li><a href="#/fans">Fans</a></li>
               <li><a href="#/idols">Idols</a></li>
+              <!-- <li><a href="#/number_one_fan">Number One Fan</a></li> -->
             </ul>
           </div>
         </div>
@@ -87,7 +84,7 @@
         <!-- view goes here -->
       </div>
 
-      <div class="footer margin-top-10" wb-show-authed>
+      <div class="footer margin-top-10 hidden" wb-show-authed>
         <div class="half-page top">
 
         </div><div class="half-page top right">
@@ -96,17 +93,16 @@
       </div>
     </div>
 
-
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <!-- <script>
-       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+    <script>
+      // (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      // (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      // m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      // })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
 
-       ga('create', 'UA-XXXXX-X');
-       ga('send', 'pageview');
-    </script> -->
+      // ga('create', 'UA-69118013-1', 'auto');
+      // ga('send', 'pageview');
+    </script>
 
     <!-- build:js(.) scripts/oldieshim.js -->
     <!--[if lt IE 9]>
@@ -137,6 +133,7 @@
     <script src="scripts/models/fan_model.js"></script>
     <script src="scripts/models/idol_model.js"></script>
     <script src="scripts/models/user_relationship_model.js"></script>
+    <script src="scripts/models/number_one_fan_model.js"></script>
 
     <script src="scripts/services/auth_service.js"></script>
     <script src="scripts/services/http_interceptor_service.js"></script>
@@ -154,6 +151,7 @@
     <script src="scripts/controllers/fans_controller.js"></script>
     <script src="scripts/controllers/idols_controller.js"></script>
     <script src="scripts/controllers/login_controller.js"></script>
+    <script src="scripts/controllers/number_one_fan_controller.js"></script>
     <!-- endbuild -->
 </body>
 </html>

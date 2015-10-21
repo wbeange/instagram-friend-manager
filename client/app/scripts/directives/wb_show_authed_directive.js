@@ -11,8 +11,14 @@ angular.module('clientApp')
     return {
       restrict: 'A',
       link: function postLink(scope, element, attrs) {
-        if(!Auth.isSignedIn()) {
-          element.hide();
+        // TODO: ngCloak directive isn't working -
+        // manually using hidden class and removing on directive load as a crutch
+        element.removeClass('hidden');
+
+        element.hide();
+
+        if(Auth.isSignedIn()) {
+          element.show();
         }
 
         scope.$on('wb-authenticated', function(event, isLoggedIn) {

@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', '$location', 'Configuration', function($rootScope, $http, $cookies, $location, Configuration) {
+angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', '$location', '$q', 'Configuration', 'UserModel',
+  function($rootScope, $http, $cookies, $location, $q, Configuration, UserModel) {
 
   var authCookieKey = 'insta-friend-mngr';
 
@@ -8,8 +9,9 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
     init: function() {
       var self = this;
 
-      $rootScope.$on('$routeChangeStart', function(event, next, current) {
+      this.authenticate();
 
+      $rootScope.$on('$routeChangeStart', function(event, next, current) {
         // authenticated
         if(self.isSignedIn()) {
 
@@ -20,34 +22,50 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
 
         // not authenticated
         } else {
-
-          // check if this is the callback after authenticating
-          var searchObject = $location.search();
-
-          if(_.has(searchObject, 'code')) {
-
-            // store the session
-            $cookies.put(authCookieKey, searchObject.code);
-
-            // If paramValue is null, the property specified via the first argument will be deleted.
-            $location.search('code', null);
-
-            $rootScope.$broadcast('wb-authenticated', true);
-
-            // redirect once logged in
-            $location.url('/followers');
-
-          } else {
-
-            // redirect to the client login page
-            $location.url('/login');
-          }
+          $location.url('/login');
         }
       });
     },
 
+    authenticate: function() {
+      var self = this, deferred = $q.defer();
+
+      // ping server for user data -
+      // if the server is authenticated we will get user data back to start a client session
+      // else the http interceptor will handle 401 and redirect to the login page
+      UserModel.get().then(
+        // success
+        function(data) {
+          // console.log('active server session', data);
+
+          // store client session
+          $cookies.put(authCookieKey, data);
+
+          $rootScope.$broadcast('wb-authenticated', true);
+
+          $location.url('/followers');
+
+          deferred.resolve(data);
+        },
+
+        // failure
+        function() {
+          deferred.reject();
+        });
+
+      return deferred.promise;
+    },
+
     isSignedIn: function() {
       return $cookies.get(authCookieKey) !== undefined;
+    },
+
+    userId: function() {
+      var user = $cookies.get(authCookieKey);
+
+      if(user) {
+        return user.id;
+      }
     },
 
     signIn: function() {
@@ -57,10 +75,12 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
 
     // TODO: better naming for these methods...
 
+    // end the client session
     signOut: function() {
       $cookies.put(authCookieKey, undefined);
     },
 
+    // end the server and client session
     logout: function() {
       // delete the server cookie
       $http.post(Configuration.base_api_url + '/oauth/disconnect');
@@ -75,5 +95,4 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
       $location.url('/login');
     }
   };
-
 }]);

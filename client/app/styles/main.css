@@ -1,3 +1,9 @@
+// angular elements
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+  display: none !important;
+}
+
 /* Space out content a bit */
 body {
   padding-top: 20px;
@@ -78,11 +84,9 @@ body {
   }
 }
 
-
 .nav-wide > li {
   padding-right: 10px;
 }
-
 
 /* my custom stylesheet
 pulling all style conventions used on my past project */
@@ -92,6 +96,8 @@ pulling all style conventions used on my past project */
 .right  { text-align: right; }
 
 .relative { position: relative; }
+
+.hidden { display: none; }
 
 /* borders */
 .border {
