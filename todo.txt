@@ -1,0 +1,31 @@
+TODO:
+- handle private user state error
+- handle dev / production variables in grunt
+- write some unit tests
+- serverside caching?
+- mixed content issue
+- RESTful API
+- presistent backend
+- friend lists
+- number one fan calculator
+-
+
+
+Deployment Notes -
+
+Server:
+
+I didn't originally realize how heroku worked at first and I got lazy.
+So for now copy over the app.rb file into a separate heroky repo
+and deploy the server from there.
+
+There's a heroku setting I should look at that let's you point to a github repository.
+
+git add .
+$ git commit -am "make it better"
+$ git push heroku master
+
+Client:
+
+grunt build
+firebase deploy

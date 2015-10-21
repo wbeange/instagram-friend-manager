@@ -2,4 +2,3 @@ legacy/
 server/config.yml
 server/node_modules
 client/dist
-todo.txt
