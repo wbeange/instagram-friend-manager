@@ -92,6 +92,9 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
     // end the client session
     signOut: function() {
       $cookies.put(Configuration.clientSessionKey, undefined);
+
+      // pub auth state
+      $rootScope.$broadcast('wb-authenticated', false);
     },
 
     // end the server and client session
@@ -101,9 +104,6 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
 
       // delete the client cookie
       this.signOut();
-
-      // pub auth state
-      $rootScope.$broadcast('wb-authenticated', false);
 
       // redirect to the client login page
       $location.url('/login');
