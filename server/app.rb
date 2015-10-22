@@ -75,6 +75,7 @@ get "/oauth/callback" do
   session[:access_token] = response.access_token
 
   # redirect back to the client
+  # send user id to automatically start a client session
   redirect settings.client_url + "/#/login"
 end
 
