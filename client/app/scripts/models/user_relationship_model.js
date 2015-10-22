@@ -23,7 +23,7 @@ angular.module('clientApp').factory('UserRelationshipModel', function($q, $http,
 
     var self = this,
       deferred = $q.defer(),
-      url = Configuration.base_api_url + "/users/" + userId + "/relationship";
+      url = Configuration.baseApiUrl + "/users/" + userId + "/relationship";
 
     if(_.has(relationship, userId) && relationship[userId]) {
       deferred.resolve(relationship[userId]);

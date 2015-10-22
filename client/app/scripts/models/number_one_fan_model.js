@@ -17,7 +17,7 @@ angular.module('clientApp').factory('NumberOneFanModel', function($q, $http, Con
   NumberOneFanModel.prototype.get = function() {
     var self = this,
       deferred = $q.defer(),
-      url = Configuration.base_api_url + "/number_one_fan";
+      url = Configuration.baseApiUrl + "/number_one_fan";
 
 
     $http.get(url).then(function(results) {

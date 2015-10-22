@@ -26,7 +26,7 @@ angular.module('clientApp').factory('FollowingModel', function($q, $http, Model,
   FollowingModel.prototype.all = function(userId) {
     var self = this,
       deferred = $q.defer(),
-      url = Configuration.base_api_url + "/users/" + userId + '/follows';
+      url = Configuration.baseApiUrl + "/users/" + userId + '/follows';
 
     // suppress call if users stored locally after first load
     if(users) {

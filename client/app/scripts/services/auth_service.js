@@ -3,8 +3,6 @@
 angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', '$location', '$q', 'Configuration', 'UserModel',
   function($rootScope, $http, $cookies, $location, $q, Configuration, UserModel) {
 
-  var authCookieKey = 'insta-friend-mngr';
-
   return {
     init: function() {
       var self = this;
@@ -39,7 +37,7 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
       // console.log('active server session', data);
 
       // store client session
-      $cookies.put(authCookieKey, data.id);
+      $cookies.put(Configuration.clientSessionKey, data.id);
 
       $rootScope.$broadcast('wb-authenticated', true);
     },
@@ -77,29 +75,29 @@ angular.module('clientApp').factory('Auth', ['$rootScope', '$http', '$cookies', 
     },
 
     isSignedIn: function() {
-      return $cookies.get(authCookieKey) !== undefined;
+      return $cookies.get(Configuration.clientSessionKey) !== undefined;
     },
 
     userId: function() {
-      return $cookies.get(authCookieKey);
+      return $cookies.get(Configuration.clientSessionKey);
     },
 
     signIn: function() {
       // redirect to authenticate with Instagram
-      window.location.href = Configuration.base_api_url + "/oauth/connect";
+      window.location.href = Configuration.baseApiUrl + "/oauth/connect";
     },
 
     // TODO: better naming for these methods...
 
     // end the client session
     signOut: function() {
-      $cookies.put(authCookieKey, undefined);
+      $cookies.put(Configuration.clientSessionKey, undefined);
     },
 
     // end the server and client session
     logout: function() {
       // delete the server cookie
-      $http.post(Configuration.base_api_url + '/oauth/disconnect');
+      $http.post(Configuration.baseApiUrl + '/oauth/disconnect');
 
       // delete the client cookie
       this.signOut();

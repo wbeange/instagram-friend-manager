@@ -23,7 +23,7 @@ angular.module('clientApp').factory('UserModel', function($q, $http, $window, Co
 
     var self = this,
       deferred = $q.defer(),
-      url = Configuration.base_api_url + "/users/" + userId;
+      url = Configuration.baseApiUrl + "/users/" + userId;
 
     // store user locally so you only load once #yolo
     if(_.has(users, userId) && users[userId]) {
@@ -53,7 +53,7 @@ angular.module('clientApp').factory('UserModel', function($q, $http, $window, Co
   UserModel.prototype.follow = function(userId) {
     // var self = this,
     //   deferred = $q.defer(),
-    //   url = Configuration.base_api_url + "/users/follow";
+    //   url = Configuration.baseApiUrl + "/users/follow";
 
     // $http.post(url, {id: userId}).then(function(result) {
     //   console.log('follow action return', result);
@@ -69,7 +69,7 @@ angular.module('clientApp').factory('UserModel', function($q, $http, $window, Co
   UserModel.prototype.unfollow = function(userId) {
     // var self = this,
     //   deferred = $q.defer(),
-    //   url = Configuration.base_api_url + "/users/unfollow";
+    //   url = Configuration.baseApiUrl + "/users/unfollow";
 
     // $http.delete(url, {id: userId}).then(function(result) {
     //   console.log('unfollow action return', result);
