@@ -54,6 +54,7 @@ body > .container {
 }
 .navbar-brand-wrapper > .navbar-brand {
   float: none;
+  font-size: 14px;
 }
 @media (min-width: 768px) {
   .container {
@@ -71,6 +72,9 @@ body > .container {
   .navbar-nav {
     float: right;
     margin-top: 35px;
+  }
+  .navbar-brand {
+    font-size: 20px !important;
   }
 }
 

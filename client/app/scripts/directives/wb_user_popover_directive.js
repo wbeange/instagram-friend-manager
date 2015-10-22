@@ -127,7 +127,10 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
           .mouseenter(function(){ loadPopoverContent(); })
 
           // hide on mouse leave
-          .mouseleave(function(){ popoverManualHide(); });
+          .mouseleave(function(){ popoverManualHide(); })
+
+          // allow click as well for mobile
+          .click(function() { loadPopoverContent(); });
 
         // manually show the first time
         loadPopoverContent();
