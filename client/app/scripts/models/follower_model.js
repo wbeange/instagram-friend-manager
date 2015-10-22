@@ -23,7 +23,7 @@ angular.module('clientApp').factory('FollowerModel', function($q, $http, Model, 
   // public
   //
 
-  FollowerModel.prototype.get = function(userId) {
+  FollowerModel.prototype.all = function(userId) {
     var self = this,
       deferred = $q.defer(),
       url = Configuration.base_api_url + "/users/" + userId + '/followed_by';

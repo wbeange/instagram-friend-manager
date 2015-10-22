@@ -1,91 +1,77 @@
-// angular elements
-
-[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
-  display: none !important;
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
 }
-
-/* Space out content a bit */
 body {
-  padding-top: 20px;
-  padding-bottom: 20px;
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  background-color: #f5f5f5;
 }
 
-/* Everything but the jumbotron gets side spacing for mobile first views */
-.header,
-.marketing,
-.footer {
-  padding-left: 15px;
+
+/* Custom page CSS
+-------------------------------------------------- */
+/* Not required for template or sticky footer method. */
+
+body > .container {
+  padding: 0px 30px 30px 30px;
+}
+.container .text-muted {
+  margin: 20px 0;
+}
+.navbar {
+  margin-bottom: 0px;
+}
+.footer > .container {
   padding-right: 15px;
+  padding-left: 15px;
 }
 
-/* Custom page header */
-.header {
-  border-bottom: 1px solid #e5e5e5;
+/* navbar styles */
+.navbar-user {
+  display: none;
 }
-/* Make the masthead heading the same height as the navigation */
-.header h3 {
-  margin-top: 0;
-  margin-bottom: 0;
-  line-height: 40px;
-  padding-bottom: 19px;
+.navbar-logout {
+  float: right;
+  padding: 5px;
 }
-
-/* Custom page footer */
-.footer {
-  padding-top: 10px;
-  color: #777;
-  border-top: 1px solid #e5e5e5;
+.navbar-toggle {
+  float: left;
+  margin: 10px;
 }
-
-/* Customize container */
+.navbar-brand-wrapper {
+  text-align: center;
+  margin-top: 10px;
+}
+.navbar-brand-wrapper > .navbar-brand {
+  float: none;
+}
 @media (min-width: 768px) {
   .container {
-    max-width: 730px;
+    max-width: 768px;
   }
-}
-.container-narrow > hr {
-  margin: 30px 0;
-}
-
-/* Main marketing message and sign up button */
-.jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
-}
-.jumbotron .btn {
-  font-size: 21px;
-  padding: 14px 24px;
-}
-
-/* Supporting marketing content */
-.marketing {
-  margin: 40px 0;
-}
-.marketing p + h4 {
-  margin-top: 28px;
-}
-
-/* Responsive: Portrait tablets and up */
-@media screen and (min-width: 768px) {
-  /* Remove the padding we set earlier */
-  .header,
-  .marketing,
-  .footer {
-    padding-left: 0;
-    padding-right: 0;
+  .navbar-user {
+    display: block;
+    padding: 10px;
+    float: left;
   }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
+  .navbar-logout {
+    float: none;
+    text-align: right;
   }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
+  .navbar-nav {
+    float: right;
+    margin-top: 35px;
   }
-}
-
-.nav-wide > li {
-  padding-right: 10px;
 }
 
 /* my custom stylesheet

@@ -22,11 +22,17 @@
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <!-- Add your site or application content here -->
-    <div class="container">
-      <div ng-controller="HeaderCtrl">
-        <div class="hidden" wb-show-authed>
-          <div class="third-page top">
+    <!-- Fixed navbar -->
+    <nav class="navbar navbar-default hidden" wb-show-authed>
+      <div class="container">
+        <div class="navbar-brand-wrapper">
+          <a class="navbar-brand" href="#/followers">
+            Instagram Friend Manager
+          </a>
+        </div>
+
+        <div style="margin-top: -35px;" ng-controller="HeaderCtrl">
+          <div class="navbar-user">
             <div class="inline-block top">
               <div style="margin-left:auto;margin-right:auto;padding-top:3px;">
                 <img class="ui-corner-all img-rounded" ng-src="{{user.profile_picture}}" alt="..." style="width:50px;">
@@ -57,41 +63,50 @@
                 <div class="line-height-small"><span class="small">followers</span></div>
               </div>
             </div>
-          </div><div class="third-page top center">
-            <div class="">
-              <h3 class="margin-top-10">Instagram Friend Manager</h3>
-            </div>
-          </div><div class="third-page top right">
-            <div ng-click="Auth.logout()" class="right pointer top">
+          </div>
+
+          <div class="navbar-logout">
+            <div ng-click="Auth.logout()" class="pointer">
               <a href="">logout</a>
             </div>
           </div>
+        </div>
 
-          <div class="padding-top-20">
-            <ul class="nav nav-tabs" wb-navigation-tabs>
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+
+        <div id="navbar" class="collapse navbar-collapse">
+          <div class="navbar-right">
+            <ul class="nav navbar-nav" wb-navigation-tabs>
               <li><a href="#/followers">Followers</a></li>
               <li><a href="#/following">Following</a></li>
               <li><a href="#/friends">Friends</a></li>
               <li><a href="#/fans">Fans</a></li>
               <li><a href="#/idols">Idols</a></li>
-              <!-- <li><a href="#/number_one_fan">Number One Fan</a></li> -->
             </ul>
           </div>
         </div>
       </div>
+    </nav>
 
-      <div class="relative padding-top-10" ng-view="" style="min-height:200px;">
+    <!-- Add your site or application content here -->
+    <div class="container">
+      <div class="padding-top-10" ng-view="">
         <!-- view goes here -->
       </div>
-
-      <div class="footer margin-top-10 hidden" wb-show-authed>
-        <div class="half-page top">
-
-        </div><div class="half-page top right">
-          <p>instagram friend manager 2015</p>
-        </div>
-      </div>
     </div>
+
+    <footer class="footer right hidden" wb-show-authed>
+      <div class="container">
+        <p class="text-muted">instagram friend manager 2015</p>
+      </div>
+    </footer>
 
     <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
     <script>
@@ -145,11 +160,7 @@
     <script src="scripts/directives/wb_loading_indicator.js"></script>
 
     <script src="scripts/controllers/header_controller.js"></script>
-    <script src="scripts/controllers/followers_controller.js"></script>
-    <script src="scripts/controllers/following_controller.js"></script>
-    <script src="scripts/controllers/friends_controller.js"></script>
-    <script src="scripts/controllers/fans_controller.js"></script>
-    <script src="scripts/controllers/idols_controller.js"></script>
+    <script src="scripts/controllers/user_collection_controller.js"></script>
     <script src="scripts/controllers/login_controller.js"></script>
     <script src="scripts/controllers/number_one_fan_controller.js"></script>
     <!-- endbuild -->

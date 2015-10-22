@@ -29,8 +29,8 @@ angular.module('clientApp').factory('FanModel', function($q, $http, FollowingMod
 
   FanModel.prototype.all = function(userId) {
     var urlCalls = [
-      FollowingModel.get(userId),
-      FollowerModel.get(userId)
+      FollowingModel.all(userId),
+      FollowerModel.all(userId)
     ];
 
     var deferred = $q.defer();

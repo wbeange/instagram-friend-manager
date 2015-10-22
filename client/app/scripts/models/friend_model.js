@@ -29,8 +29,8 @@ angular.module('clientApp').factory('FriendModel', function($q, $http, Following
 
   FriendModel.prototype.all = function(userId) {
     var urlCalls = [
-      FollowingModel.get(userId),
-      FollowerModel.get(userId)
+      FollowingModel.all(userId),
+      FollowerModel.all(userId)
     ];
 
     var deferred = $q.defer();

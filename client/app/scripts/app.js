@@ -11,12 +11,12 @@ angular
   // routes
   .config(function ($routeProvider) {
     $routeProvider
-      .when('/followers',       { controller: 'FollowersCtrl',    templateUrl: 'views/main.html', reloadOnSearch: false })
-      .when('/following',       { controller: 'FollowingCtrl',    templateUrl: 'views/main.html', reloadOnSearch: false })
-      .when('/friends',         { controller: 'FriendsCtrl',      templateUrl: 'views/main.html', reloadOnSearch: false })
-      .when('/fans',            { controller: 'FansCtrl',         templateUrl: 'views/main.html', reloadOnSearch: false })
-      .when('/idols',           { controller: 'IdolsCtrl',        templateUrl: 'views/main.html', reloadOnSearch: false })
-      .when('/login',           { controller: 'LoginCtrl',        templateUrl: 'views/login.html', reloadOnSearch: false })
+      .when('/followers', { controller: 'UserCollectionCtrl', templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/following', { controller: 'UserCollectionCtrl', templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/friends', { controller: 'UserCollectionCtrl', templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/fans', { controller: 'UserCollectionCtrl', templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/idols', { controller: 'UserCollectionCtrl', templateUrl: 'views/main.html', reloadOnSearch: false })
+      .when('/login', { controller: 'LoginCtrl', templateUrl: 'views/login.html', reloadOnSearch: false })
       // .when('/number_one_fan',  { controller: 'NumberOneFanCtrl', templateUrl: 'views/number_one_fan.html', reloadOnSearch: false })
 
       .otherwise({ redirectTo: '/login', reloadOnSearch: false });
