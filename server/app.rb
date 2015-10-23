@@ -84,8 +84,8 @@ helpers do
   end
 
   def calculate_top_fans(options = {})
-    friends_count = options.has_key?(:friends_count) ? options.friends_count : 5
-    media_count = options.has_key?(:media_count) ? options.media_count : 5
+    friends_count = options.has_key?(:friends_count) ? options.friends_count : 25
+    media_count = options.has_key?(:media_count) ? options.media_count : 25
 
     # TODO - interesting media to look available
     # media.likes
@@ -109,21 +109,50 @@ helpers do
 
     # TODO - define my algorithm for calculating a top fan
 
-    # find the users that have liked the most photos
+    score_weight_like = 1
+    score_weight_comment = 2
 
-    # data = user_id_media_ids_hash.map {|user_id, liked_media_ids| [user_id, liked_media_ids]}
+    user_id_scores_hash = {}
 
-    # data_sorted = data.sort do |a, b|
-    #   if a[1].count > b[1].count
-    #     -1
-    #   elsif a[1].count < b[1].count
-    #     1
-    #   else
-    #     0
-    #   end
-    # end
+    media_likes_data.each do |user_id, media_ids|
+      user_id_scores_hash[user_id] ||= 0
+      user_id_scores_hash[user_id] += ( media_ids.count * score_weight_like )
+    end
 
-    media_comments_data
+    media_comments_data.each do |user_id, media_ids|
+      user_id_scores_hash[user_id] ||= 0
+      user_id_scores_hash[user_id] += ( media_ids.count * score_weight_comment )
+    end
+
+    # find highest scores
+
+    data = user_id_scores_hash.map {|user_id, score| [user_id, score]}
+
+    data_sorted = data.sort do |a, b|
+      if a[1] > b[1]
+        -1
+      elsif a[1] < b[1]
+        1
+      else
+        0
+      end
+    end
+
+    # build the results
+
+    results = data_sorted[0..10].map do |item|
+      user_id = item[0]
+
+      result = {
+        :user_id => user_id,
+        :media_likes => media_likes_data[user_id],
+        :media_comments => media_comments_data[user_id]
+      }
+
+      result
+    end
+
+    results
   end
 
   private
@@ -171,11 +200,7 @@ helpers do
       end
     end
 
-    results = user_id_media_ids_hash.map do |user_id, media_ids|
-      {:user_id => user_id, :media_likes => media_ids}
-    end
-
-    results
+    user_id_media_ids_hash
   end
 
   def get_media_comments(medias)
@@ -193,11 +218,7 @@ helpers do
       end
     end
 
-    results = user_id_media_ids_hash.map do |user_id, media_ids|
-      {:user_id => user_id, :media_comments => media_ids}
-    end
-
-    results
+    user_id_media_ids_hash
   end
 end
 
