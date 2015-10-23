@@ -51,6 +51,157 @@ before do
 end
 
 #
+# helpers
+#
+
+helpers do
+  def user_follows
+    results = []
+
+    response = @client.user_follows()
+    results = results + response
+
+    while response.pagination && response.pagination.next_cursor && results.count < settings.user_follows_max
+      response = @client.user_follows({:cursor => response.pagination.next_cursor})
+      results = results + response
+    end
+
+    results
+  end
+
+  def user_followed_by
+    results = []
+
+    response = @client.user_followed_by()
+    results = results + response
+
+    while response.pagination && response.pagination.next_cursor && results.count < settings.user_followed_by_max
+      response = @client.user_followed_by({:cursor => response.pagination.next_cursor})
+      results = results + response
+    end
+
+    results
+  end
+
+  def calculate_top_fans(options = {})
+    friends_count = options.has_key?(:friends_count) ? options.friends_count : 5
+    media_count = options.has_key?(:media_count) ? options.media_count : 5
+
+    # TODO - interesting media to look available
+    # media.likes
+    # media.comments
+    # media.users_in_photo
+    # media.tags
+
+    # get the users most recent instagram posts
+    # TODO - ability to dig further
+    # TODO - caching b/c lots of API calls made here
+
+    medias = @client.user_recent_media({:count => media_count})
+
+    # get users who have liked your photos
+
+    media_likes_data = get_media_likes(medias)
+
+    # get users who have commented on your photos
+
+    media_comments_data = get_media_comments(medias)
+
+    # TODO - define my algorithm for calculating a top fan
+
+    # find the users that have liked the most photos
+
+    # data = user_id_media_ids_hash.map {|user_id, liked_media_ids| [user_id, liked_media_ids]}
+
+    # data_sorted = data.sort do |a, b|
+    #   if a[1].count > b[1].count
+    #     -1
+    #   elsif a[1].count < b[1].count
+    #     1
+    #   else
+    #     0
+    #   end
+    # end
+
+    media_comments_data
+  end
+
+  private
+
+  # get all users that have liked a photo
+  def media_likes(media_id)
+    results = []
+
+    response = @client.media_likes(media_id)
+    results = results + response
+
+    while response.pagination && response.pagination.next_cursor && users.count < settings.media_likes_max
+      response = @client.media_likes(media_id, {:cursor => response.pagination.next_cursor})
+      results = results + response
+    end
+
+    results
+  end
+
+  # get all comments on a photo
+  def media_comments(media_id)
+    results = []
+
+    response = @client.media_comments(media_id)
+    results = results + response
+
+    while response.pagination && response.pagination.next_cursor && users.count < settings.media_likes_max
+      response = @client.media_comments(media_id, {:cursor => response.pagination.next_cursor})
+      results = results + response
+    end
+
+    results
+  end
+
+  def get_media_likes(medias)
+    user_id_media_ids_hash = {}
+
+    medias.each do |media|
+      media_id = media.id
+
+      users = media_likes(media_id)
+      users.each do |user|
+        user_id_media_ids_hash[user.id] ||= []
+        user_id_media_ids_hash[user.id].push(media_id)
+      end
+    end
+
+    results = user_id_media_ids_hash.map do |user_id, media_ids|
+      {:user_id => user_id, :media_likes => media_ids}
+    end
+
+    results
+  end
+
+  def get_media_comments(medias)
+    user_id_media_ids_hash = {}
+
+    medias.each do |media|
+      media_id = media.id
+
+      comments = media_comments(media_id)
+      comments.each do |comment|
+        user_id = comment.from.id
+
+        user_id_media_ids_hash[user_id] ||= []
+        user_id_media_ids_hash[user_id].push(media_id)
+      end
+    end
+
+    results = user_id_media_ids_hash.map do |user_id, media_ids|
+      {:user_id => user_id, :media_comments => media_ids}
+    end
+
+    results
+  end
+end
+
+#
 # controllers
 #
 
@@ -76,7 +227,7 @@ get "/oauth/callback" do
 
   # redirect back to the client
   # send user id to automatically start a client session
-  redirect settings.client_url + "/#/login"
+  redirect settings.client_url + "/#/login?self=#{response.user.id}"
 end
 
 get "/limits" do
@@ -95,72 +246,22 @@ get "/users/:id" do
 end
 
 get "/users/:id/follows" do
-  users = []
-
-  response = @client.user_follows()
-  users = users + response
-
-  while response.pagination && response.pagination.next_cursor && users.count < 1000
-    next_cursor = response.pagination.next_cursor
-    response = @client.user_follows({:cursor => next_cursor})
-    users = users + response
-  end
-
-  json users
+  json user_follows
 end
 
 get "/users/:id/followed_by" do
-  users = []
-
-  response = @client.user_followed_by()
-  users = users + response
-
-  while response.pagination && response.pagination.next_cursor && users.count < 1000
-    next_cursor = response.pagination.next_cursor
-    response = @client.user_followed_by({:cursor => next_cursor})
-    users = users + response
-  end
-
-  json users
+  json user_followed_by
 end
 
 get "/users/:id/relationship" do
   json @client.user_relationship("#{params[:id]}")
 end
 
-# get "/number_one_fan" do
-#   media = @client.user_recent_media
+get "/number_one_fan" do
+  json calculate_top_fans
+end
 
-#   # results = media.map do |pic|
-#   #   {
-#   #     "comments" => pic.comments,
-#   #     "likes" => pic.likes,
-#   #     "users_in_photo" => pic.users_in_photo
-#   #   }
-#   # end
-
-#   media_ids = media.map { |pic| pic.id }
-#   # media_ids = media_ids[0..4]
-#   # user_id_likes_count_hash = Hash.new(0)
-
-
-#   media_ids.each do |media_id|
-#     users = @client.media_likes(media_id)
-#     # user_ids = users.map { |user| user.id }
-#     users.each { |user| user_id_likes_count_hash[user.id] += 1 }
-#   end
-
-#   user_id_highest = nil
-#   user_id_likes_count_hash.each do |user_id, likes_count|
-
-#     if user_id_highest == nil
-#       user_id_highest = {:}
-#     end
-
-#   end
-
-#   json user_id_likes_count_hash
-# end
+# Note: Instagram stopped follow/unfollow actions to the public
 
 # post "/users/follow" do
 #   # @client.follow_user("#{params[:id]}")
