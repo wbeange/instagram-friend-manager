@@ -84,7 +84,7 @@ helpers do
   end
 
   def calculate_top_fans(options = {})
-    friends_count = options.has_key?(:friends_count) ? options.friends_count : 25
+    results_count = options.has_key?(:results_count) ? options.results_count : 25
     media_count = options.has_key?(:media_count) ? options.media_count : 25
 
     # TODO - interesting media to look available
@@ -107,50 +107,13 @@ helpers do
 
     media_comments_data = get_media_comments(medias)
 
-    # TODO - define my algorithm for calculating a top fan
+    # run top friends algorithm
 
-    score_weight_like = 1
-    score_weight_comment = 2
+    user_id_scores_hash = get_user_scores(media_likes_data, media_comments_data)
 
-    user_id_scores_hash = {}
+    # build return data
 
-    media_likes_data.each do |user_id, media_ids|
-      user_id_scores_hash[user_id] ||= 0
-      user_id_scores_hash[user_id] += ( media_ids.count * score_weight_like )
-    end
-
-    media_comments_data.each do |user_id, media_ids|
-      user_id_scores_hash[user_id] ||= 0
-      user_id_scores_hash[user_id] += ( media_ids.count * score_weight_comment )
-    end
-
-    # find highest scores
-
-    data = user_id_scores_hash.map {|user_id, score| [user_id, score]}
-
-    data_sorted = data.sort do |a, b|
-      if a[1] > b[1]
-        -1
-      elsif a[1] < b[1]
-        1
-      else
-        0
-      end
-    end
-
-    # build the results
-
-    results = data_sorted[0..10].map do |item|
-      user_id = item[0]
-
-      result = {
-        :user_id => user_id,
-        :media_likes => media_likes_data[user_id],
-        :media_comments => media_comments_data[user_id]
-      }
-
-      result
-    end
+    results = build_top_fan_results(media_likes_data, media_comments_data, user_id_scores_hash, results_count)
 
     results
   end
@@ -219,6 +182,61 @@ helpers do
     end
 
     user_id_media_ids_hash
+  end
+
+  # TODO - define my algorithm for calculating a top fan
+  def get_user_scores(media_likes_data, media_comments_data)
+    score_weight_like = 1
+    score_weight_comment = 2
+
+    user_id_scores_hash = {}
+
+    media_likes_data.each do |user_id, media_ids|
+      user_id_scores_hash[user_id] ||= 0
+      user_id_scores_hash[user_id] += ( media_ids.count * score_weight_like )
+    end
+
+    media_comments_data.each do |user_id, media_ids|
+      user_id_scores_hash[user_id] ||= 0
+      user_id_scores_hash[user_id] += ( media_ids.count * score_weight_comment )
+    end
+
+    user_id_scores_hash
+  end
+
+  def build_top_fan_results(media_likes_data, media_comments_data, user_id_scores_hash, results_count)
+
+    # find highest scores
+
+    data = user_id_scores_hash.map {|user_id, score| [user_id, score]}
+
+    data_sorted = data.sort do |a, b|
+      if a[1] > b[1]
+        -1
+      elsif a[1] < b[1]
+        1
+      else
+        0
+      end
+    end
+
+    # build the results
+
+    results = data_sorted[0..results_count-1].map do |item|
+      user_id = item[0]
+
+      user = @client.user(user_id)
+
+      result = {
+        :user => user,
+        :media_likes => media_likes_data[user_id],
+        :media_comments => media_comments_data[user_id]
+      }
+
+      result
+    end
+
+    results
   end
 end
 

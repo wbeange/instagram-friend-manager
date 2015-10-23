@@ -12,7 +12,7 @@ angular.module('clientApp')
 
     $scope.isLoading = true;
     NumberOneFanModel.get().then(function(data) {
-      $scope.data = data;
+      $scope.besties = data;
       $scope.isLoading = false;
     });
   });
