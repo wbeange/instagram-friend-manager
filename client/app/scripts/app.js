@@ -17,7 +17,7 @@ angular
       .when('/fans', { controller: 'UserCollectionCtrl', templateUrl: 'views/main.html', reloadOnSearch: false })
       .when('/idols', { controller: 'UserCollectionCtrl', templateUrl: 'views/main.html', reloadOnSearch: false })
       .when('/login', { controller: 'LoginCtrl', templateUrl: 'views/login.html', reloadOnSearch: false })
-      // .when('/number_one_fan',  { controller: 'NumberOneFanCtrl', templateUrl: 'views/number_one_fan.html', reloadOnSearch: false })
+      .when('/besties',  { controller: 'NumberOneFanCtrl', templateUrl: 'views/number_one_fan.html', reloadOnSearch: false })
 
       .otherwise({ redirectTo: '/login', reloadOnSearch: false });
   })
