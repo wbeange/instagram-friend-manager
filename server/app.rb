@@ -5,9 +5,12 @@
 # or use bundle
 # $ bundle exec ruby app.rb
 
+require "rubygems"
 require "sinatra"
+require 'sinatra/contrib/all' # Requires cookies, among other things
 require "sinatra/config_file"
 require "sinatra/json"
+require "redis"
 require "instagram"
 require "json"
 
@@ -37,8 +40,8 @@ before do
   halt 401, 'please authenticate' if session[:access_token] == nil
 end
 
+# init ruby instagram api
 before do
-  # init ruby instagram api
   Instagram.configure do |config|
     config.client_id = settings.client_id
     config.client_secret = settings.client_secret
@@ -50,11 +53,24 @@ before do
   @client = Instagram.client(:access_token => session[:access_token])
 end
 
+# init redis
+redis = Redis.new
+
+# set content type json
+before do
+  content_type :json
+end
+
 #
 # helpers
 #
 
 helpers do
+  # generate redis key off request path
+  def redis_key
+    "ifm_#{request.path_info.gsub('/', '_')}"
+  end
+
   def user_follows
     results = []
 
@@ -281,7 +297,14 @@ end
 #
 
 get "/users/:id" do
-  json @client.user("#{params[:id]}")
+  user = redis.get(redis_key)
+
+  if !user
+    user = @client.user("#{params[:id]}").to_json
+    redis.setex(redis_key, 30, user)
+  end
+
+  user
 end
 
 get "/users/:id/follows" do

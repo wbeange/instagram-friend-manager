@@ -22,8 +22,8 @@ and deploy the server from there.
 There's a heroku setting I should look at that let's you point to a github repository.
 
 git add .
-$ git commit -am "make it better"
-$ git push heroku master
+git commit -am "make it better"
+git push heroku master
 
 Client:
 
