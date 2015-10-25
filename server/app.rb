@@ -55,12 +55,7 @@ end
 
 # init redis
 before do
-  @redis = Redis.new
-end
-
-# set content type json
-before do
-  content_type :json
+  @redis = Redis.new(:url => settings.redis_url)
 end
 
 #
@@ -101,6 +96,8 @@ helpers do
       user = @client.user(user_id).to_json
       @redis.setex(redis_key, (60*5), user)
     end
+
+    user = JSON.parse(user)
 
     user
   end
@@ -379,7 +376,7 @@ end
 #
 
 get "/users/:id" do
-  get_user(params[:id])
+  json get_user(params[:id])
 end
 
 get "/users/:id/follows" do

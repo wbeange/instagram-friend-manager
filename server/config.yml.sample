@@ -1,4 +1,13 @@
-client_id: CLIENT_ID
-client_secret: CLIENT_SECRET
-callback_url: REDIRECT_URL
-client_url: CLIENT_URL
+# instagram
+client_id:
+client_secret:
+callback_url:
+client_url:
+
+# redis
+redis_url:
+
+# throttles for power users
+user_follows_max: 1000
+user_followed_by_max: 1000
+media_likes_max: 10
