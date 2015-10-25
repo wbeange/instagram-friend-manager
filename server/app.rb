@@ -54,7 +54,9 @@ before do
 end
 
 # init redis
-redis = Redis.new
+before do
+  @redis = Redis.new
+end
 
 # set content type json
 before do
@@ -66,9 +68,41 @@ end
 #
 
 helpers do
-  # generate redis key off request path
-  def redis_key
-    "ifm_#{request.path_info.gsub('/', '_')}"
+  def user_redis_key(user_id)
+    redis_key("_user_#{user_id}")
+  end
+
+  def user_recent_media_redis_key(user_id, page_number, page_size)
+    redis_key("_user_recent_media_#{user_id}_#{page_number}_#{page_size}")
+  end
+
+  def media_likes_redis_key(media_id)
+    redis_key("_media_likes_#{media_id}")
+  end
+
+  def media_comments_redis_key(media_id)
+    redis_key("_media_comments_#{media_id}")
+  end
+
+  def redis_key(val=nil)
+    # generate redis key off request path
+    if val
+      "ifm#{val}"
+    else
+      "ifm#{request.path_info.gsub('/', '_')}"
+    end
+  end
+
+  def get_user(user_id)
+    redis_key = user_redis_key(user_id)
+    user = @redis.get(redis_key)
+
+    if !user
+      user = @client.user(user_id).to_json
+      @redis.setex(redis_key, (60*5), user)
+    end
+
+    user
   end
 
   def user_follows
@@ -100,8 +134,10 @@ helpers do
   end
 
   def calculate_top_fans(options = {})
+    user_id = options[:user_id]
+    page_size = options.has_key?(:page_size) ? options.page_size : 25
+    page_number = options.has_key?(:page_number) ? options.page_number : 1
     results_count = options.has_key?(:results_count) ? options.results_count : 25
-    media_count = options.has_key?(:media_count) ? options.media_count : 25
 
     # TODO - interesting media to look available
     # media.likes
@@ -113,7 +149,15 @@ helpers do
     # TODO - ability to dig further
     # TODO - caching b/c lots of API calls made here
 
-    medias = @client.user_recent_media({:count => media_count})
+    medias = get_medias(user_id, page_number, page_size)
+
+    # puts "* * *"
+    # puts "* * *"
+    # puts "#{medias[0].class}"
+    # puts "* * *"
+    # puts "* * *"
+
+    # halt 200, medias.to_json
 
     # get users who have liked your photos
 
@@ -136,32 +180,69 @@ helpers do
 
   private
 
+  # get the user's posted photos
+  def get_medias(user_id, page_number, page_size)
+    redis_key = user_recent_media_redis_key(user_id, page_number, page_size)
+    medias = @redis.get(redis_key)
+
+    if !medias
+      medias = @client.user_recent_media({:count => page_size}).to_json
+      @redis.setex(redis_key, (60*10), medias)
+    end
+
+    medias = JSON.parse(medias)
+
+    medias
+  end
+
   # get all users that have liked a photo
   def media_likes(media_id)
-    results = []
+    redis_key = media_likes_redis_key(media_id)
+    results = @redis.get(redis_key)
 
-    response = @client.media_likes(media_id)
-    results = results + response
+    if !results
+      results = []
 
-    while response.pagination && response.pagination.next_cursor && users.count < settings.media_likes_max
-      response = @client.media_likes(media_id, {:cursor => response.pagination.next_cursor})
+      response = @client.media_likes(media_id)
       results = results + response
+
+      while response.pagination && response.pagination.next_cursor && users.count < settings.media_likes_max
+        response = @client.media_likes(media_id, {:cursor => response.pagination.next_cursor})
+        results = results + response
+      end
+
+      results = results.to_json
+
+      @redis.setex(redis_key, (60*10), results)
     end
+
+    results = JSON.parse(results)
 
     results
   end
 
   # get all comments on a photo
   def media_comments(media_id)
-    results = []
+    redis_key = media_comments_redis_key(media_id)
+    results = @redis.get(redis_key)
 
-    response = @client.media_comments(media_id)
-    results = results + response
+    if !results
+      results = []
 
-    while response.pagination && response.pagination.next_cursor && users.count < settings.media_likes_max
-      response = @client.media_comments(media_id, {:cursor => response.pagination.next_cursor})
+      response = @client.media_comments(media_id)
       results = results + response
+
+      while response.pagination && response.pagination.next_cursor && users.count < settings.media_likes_max
+        response = @client.media_comments(media_id, {:cursor => response.pagination.next_cursor})
+        results = results + response
+      end
+
+      results = results.to_json
+
+      @redis.setex(redis_key, (60*10), results)
     end
+
+    results = JSON.parse(results)
 
     results
   end
@@ -170,12 +251,12 @@ helpers do
     user_id_media_ids_hash = {}
 
     medias.each do |media|
-      media_id = media.id
+      media_id = media['id']
 
       users = media_likes(media_id)
       users.each do |user|
-        user_id_media_ids_hash[user.id] ||= []
-        user_id_media_ids_hash[user.id].push(media_id)
+        user_id_media_ids_hash[user['id']] ||= []
+        user_id_media_ids_hash[user['id']].push(media_id)
       end
     end
 
@@ -186,11 +267,11 @@ helpers do
     user_id_media_ids_hash = {}
 
     medias.each do |media|
-      media_id = media.id
+      media_id = media['id']
 
       comments = media_comments(media_id)
       comments.each do |comment|
-        user_id = comment.from.id
+        user_id = comment['from']['id']
 
         user_id_media_ids_hash[user_id] ||= []
         user_id_media_ids_hash[user_id].push(media_id)
@@ -241,7 +322,7 @@ helpers do
     results = data_sorted[0..results_count-1].map do |item|
       user_id = item[0]
 
-      user = @client.user(user_id)
+      user = get_user(user_id)
 
       result = {
         :user => user,
@@ -279,6 +360,7 @@ end
 get "/oauth/callback" do
   response = Instagram.get_access_token(params[:code])
   session[:access_token] = response.access_token
+  session[:user_id] = response.user.id
 
   # redirect back to the client
   # send user id to automatically start a client session
@@ -297,14 +379,7 @@ end
 #
 
 get "/users/:id" do
-  user = redis.get(redis_key)
-
-  if !user
-    user = @client.user("#{params[:id]}").to_json
-    redis.setex(redis_key, 30, user)
-  end
-
-  user
+  get_user(params[:id])
 end
 
 get "/users/:id/follows" do
@@ -320,7 +395,8 @@ get "/users/:id/relationship" do
 end
 
 get "/number_one_fan" do
-  json calculate_top_fans
+  options = {:user_id => session[:user_id]}
+  json calculate_top_fans(options)
 end
 
 # Note: Instagram stopped follow/unfollow actions to the public
