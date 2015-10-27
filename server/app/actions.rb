@@ -1,24 +1,4 @@
-# Getting Started
-# $ bundle install
-# $ rerun app.rb
-#
-# or use bundle
-# $ bundle exec ruby app.rb
-
-require "rubygems"
-require "sinatra"
-require 'sinatra/contrib/all' # Requires cookies, among other things
-require "sinatra/config_file"
-require "sinatra/json"
-require "redis"
-require "instagram"
-require "json"
-
-# allows us to store instagram access token in a cookie
-enable :sessions
-
-# config file holds instagram app api settings
-config_file 'config.yml'
+# TODO - break this up into a nice app file structure
 
 # enable CORS
 before do
@@ -37,7 +17,7 @@ before do
   pass if request.path_info == "/oauth/callback"
 
   # tell client to logged in
-  halt 401, 'please authenticate' if session[:access_token] == nil
+  halt 401, 'please authenticate' if session[:access_token] == nil || session[:user_id] == nil
 end
 
 # init ruby instagram api
@@ -53,7 +33,7 @@ before do
   @client = Instagram.client(:access_token => session[:access_token])
 end
 
-# init redis
+# init redis caching layer
 before do
   @redis = Redis.new(:url => settings.redis_url)
 end
@@ -93,8 +73,12 @@ helpers do
     user = @redis.get(redis_key)
 
     if !user
-      user = @client.user(user_id).to_json
-      @redis.setex(redis_key, (60*5), user)
+      begin
+        user = @client.user(user_id).to_json
+        @redis.setex(redis_key, (60*60), user)
+      rescue Instagram::BadRequest => e
+        halt 403, 'private instagram account' and return
+      end
     end
 
     user = JSON.parse(user)
@@ -144,17 +128,8 @@ helpers do
 
     # get the users most recent instagram posts
     # TODO - ability to dig further
-    # TODO - caching b/c lots of API calls made here
 
     medias = get_medias(user_id, page_number, page_size)
-
-    # puts "* * *"
-    # puts "* * *"
-    # puts "#{medias[0].class}"
-    # puts "* * *"
-    # puts "* * *"
-
-    # halt 200, medias.to_json
 
     # get users who have liked your photos
 
@@ -184,7 +159,7 @@ helpers do
 
     if !medias
       medias = @client.user_recent_media({:count => page_size}).to_json
-      @redis.setex(redis_key, (60*10), medias)
+      @redis.setex(redis_key, (60*5), medias)
     end
 
     medias = JSON.parse(medias)
@@ -210,7 +185,7 @@ helpers do
 
       results = results.to_json
 
-      @redis.setex(redis_key, (60*10), results)
+      @redis.setex(redis_key, (60*60), results)
     end
 
     results = JSON.parse(results)
@@ -236,7 +211,7 @@ helpers do
 
       results = results.to_json
 
-      @redis.setex(redis_key, (60*10), results)
+      @redis.setex(redis_key, (60*60), results)
     end
 
     results = JSON.parse(results)
@@ -352,6 +327,7 @@ end
 
 post "/oauth/disconnect" do
   session[:access_token] = nil
+  session[:user_id] = nil
 end
 
 get "/oauth/callback" do
@@ -365,10 +341,15 @@ get "/oauth/callback" do
 end
 
 get "/limits" do
-  # response = @client.utils_raw_response
-  # limit = response.haders[:x_ratelimit_limit]
-  # {:limit => limit}.to_json
-  # json @client.utils_raw_response
+  response = @client.utils_raw_response
+
+  data = {
+    :remaining => response['X-Ratelimit-Remaining'],
+    :limit => response['X-Ratelimit-Limit']
+  }
+
+  content_type :json
+  data.to_json
 end
 
 #
@@ -376,7 +357,12 @@ end
 #
 
 get "/users/:id" do
-  json get_user(params[:id])
+  user_id = params[:id]
+
+  # TODO - how to handle 'self' from client but cache by user_id in order to avoid clashes?
+  user_id = session[:user_id] if user_id == 'self'
+
+  json get_user(user_id)
 end
 
 get "/users/:id/follows" do
@@ -388,7 +374,8 @@ get "/users/:id/followed_by" do
 end
 
 get "/users/:id/relationship" do
-  json @client.user_relationship("#{params[:id]}")
+  user_id = params[:id]
+  json @client.user_relationship(user_id)
 end
 
 get "/number_one_fan" do
