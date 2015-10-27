@@ -17,10 +17,6 @@ angular.module('clientApp').factory('UserRelationshipModel', function($q, $http,
   //
 
   UserRelationshipModel.prototype.get = function(userId) {
-    if(userId === undefined) {
-      userId = "self";
-    }
-
     var self = this,
       deferred = $q.defer(),
       url = Configuration.baseApiUrl + "/users/" + userId + "/relationship";
