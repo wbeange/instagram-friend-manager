@@ -1,21 +1,26 @@
-<table class="table">
-  <caption>Omg your besties in the whole wide world... of Instagram.</caption>
+<!-- TODO: hacked styles catches the loading class -->
+<div style="position:relative; min-height: 200px;">
+  <div wb-loading-indicator="isLoading"></div>
 
-  <thead>
-    <tr>
-      <th>Rank</th>
-      <th>Username</th>
-      <th>Likes</th>
-      <th>Comments</th>
-    </tr>
-  </thead>
+  <table class="table">
+    <caption>Your besties in the whole wide world... of Instagram (feature in progress).</caption>
 
-  <tbody>
-    <tr ng-repeat="(place, bestie) in besties">
-      <th>{{place + 1}}</th>
-      <th>{{bestie.user.username}}</th>
-      <th>{{bestie.media_likes.length || 0}}</th>
-      <th>{{bestie.media_comments.length || 0}}</th>
-    </tr>
-  </tbody>
-</table>
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Username</th>
+        <th>Likes</th>
+        <th>Comments</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr ng-repeat="(place, bestie) in besties">
+        <th>{{place + 1}}</th>
+        <th>{{bestie.user.username}}</th>
+        <th>{{bestie.media_likes.length || 0}}</th>
+        <th>{{bestie.media_comments.length || 0}}</th>
+      </tr>
+    </tbody>
+  </table>
+</div>
