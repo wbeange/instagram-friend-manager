@@ -1,8 +1,6 @@
 TODO:
-- handle private user state error
 - handle dev / production variables in grunt
 - write some unit tests
-- serverside caching?
 - mixed content issue
 - RESTful API
 - presistent backend
@@ -10,10 +8,11 @@ TODO:
 - number one fan calculator
 -
 
-
 Deployment Notes -
 
 Server:
+
+shotgun -p 4567 -o 0.0.0.0
 
 I didn't originally realize how heroku worked at first and I got lazy.
 So for now copy over the app.rb file into a separate heroky repo

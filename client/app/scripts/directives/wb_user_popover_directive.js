@@ -44,17 +44,21 @@ angular.module('clientApp').directive('wbUserPopover', function($rootScope, $com
         // manually trigger popover show (create popover element)
         $('#'+scope.userPopoverId).popover('show');
 
-        UserModel.get(scope.user.id).then(function(data) {
-          scope.user = data;
+        UserRelationshipModel.get(scope.user.id).then(function(data) {
+          scope.relationship = data;
 
-          UserRelationshipModel.get(scope.user.id).then(function(data) {
-            scope.relationship = data;
+          // Note - we are cheating here allowing delay to fix load delay issue
+          // keep popover open when hovered inside it
+          $('#'+scope.popoverId)
+            .mouseenter(function(){ cancelHideTimer(); })
+            .mouseleave(function(){ popoverManualHide(); });
 
-            // keep popover open when hovered inside it
-            $('#'+scope.popoverId)
-              .mouseenter(function(){ cancelHideTimer(); })
-              .mouseleave(function(){ popoverManualHide(); });
-          });
+          // Handle private unfollowed users case
+          if(!data.target_user_is_private || data.outgoing_status != 'none') {
+            UserModel.get(scope.user.id).then(function(data) {
+              scope.user = data;
+            });
+          }
         });
       }
 
